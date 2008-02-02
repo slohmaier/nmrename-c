@@ -73,6 +73,7 @@ void nm_help(void) {
 		"COMMANDS:\n"
 		"  -h               : Print this text.\n"
 		"  -f               : Renames without asking. Use with CAUTION!\n"
+		"  -c               : Clear the pathlist.\n"
 		"  -cc              : Camelcase (e.g. hallo -> Hallo)\n"
 		"  -cu              : Uppercase (e.g. hallo -> HALLO)\n"
 		"  -cl              : Lowercase (e.g. HALLO -> hallo)\n"

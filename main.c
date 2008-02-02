@@ -37,7 +37,7 @@ unsigned short force=0; //force renaming? no questions asked
 int main(int argc, char* *argv) {
 	//vars
 	int arg=1;            //counter for argument parsing. (start at first argument)
-	char** pathlist=NULL; //list for paths to rename
+	char **pathlist=NULL; //list for paths to rename
 	int pathno=0;         //count for paths in pathlist
 	
 	//parse arguments one by one
@@ -51,6 +51,22 @@ int main(int argc, char* *argv) {
 		//activate force mode
 		else if(strcmp("-f", argv[arg]) == 0) {
 			force=1;
+		}
+		//clear pathlist
+		else if(strcmp("-c", argv[arg]) == 0) {
+			nm_msg("");
+			
+			//free the memory off each path string and then the pathlist itself
+			for(; pathno>0; pathno--)
+				free(pathlist[pathno-1]);
+			free(pathlist);
+			
+			//reset start parameters
+			pathno=0;
+			pathlist=NULL;
+			
+			nm_msg("\033[1mCleared pathlist.\033[m");
+			nm_msg("");
 		}
 		//remove from pos1 to pos2
 		else if(strcmp("-d", argv[arg]) == 0) {
