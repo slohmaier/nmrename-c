@@ -18,4 +18,4 @@ install:
 	install -m 755 nmrename $(DESTDIR)/$(PREFIX)/bin/
 
 uninstall:
-	rm -f $(DESTDIR)/$(PREFIX)/bin/
+	rm -f $(DESTDIR)/$(PREFIX)/bin/nmrename
