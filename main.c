@@ -37,7 +37,7 @@ unsigned short force=0; //force renaming? no questions asked
 int main(int argc, char* *argv) {
 	//vars
 	int arg=1;            //counter for argument parsing. (start at first argument)
-	char* *pathlist=NULL; //list for paths to rename
+	char** pathlist=NULL; //list for paths to rename
 	int pathno=0;         //count for paths in pathlist
 	
 	//parse arguments one by one
@@ -58,7 +58,7 @@ int main(int argc, char* *argv) {
 			if(argc-2-arg<1)
 				nm_error("Too less arguments left for delete cmd.");
 			
-			nm_delete(pathlist, pathno, argv[arg+1], argv[arg+2]);
+			pathlist=nm_delete(pathlist, pathno, argv[arg+1], argv[arg+2]);
 			arg+=2;
 		}
 		//replace str1 with str2
@@ -67,7 +67,7 @@ int main(int argc, char* *argv) {
 			if(argc-2-arg<1)
 				nm_error("Too less arguments left for string replace cmd.");
 			
-			nm_replace_str(pathlist, pathno, argv[arg+1], argv[arg+2]);
+			pathlist=nm_replace_str(pathlist, pathno, argv[arg+1], argv[arg+2]);
 			arg+=2;
 		}
 		//delete str
@@ -76,7 +76,7 @@ int main(int argc, char* *argv) {
 			if(argc-1-arg<1)
 				nm_error("Too less arguments left for string replace cmd.");
 			
-			nm_delete_str(pathlist, pathno, argv[arg+1]);
+			pathlist=nm_delete_str(pathlist, pathno, argv[arg+1]);
 			arg++;
 		}
 		//insert str at pos
@@ -85,20 +85,20 @@ int main(int argc, char* *argv) {
 			if(argc-2-arg<1)
 				nm_error("Too less arguments left for string insert cmd.");
 			
-			nm_insert_str(pathlist, pathno, argv[arg+1], argv[arg+2]);
+			pathlist=nm_insert_str(pathlist, pathno, argv[arg+1], argv[arg+2]);
 			arg+=2;
 		}
 		//camelcase
 		else if(strcmp("-cc", argv[arg]) == 0) {
-			nm_camel_case_str(pathlist, pathno);
+			pathlist=nm_camel_case_str(pathlist, pathno);
 		}
 		//uppercase
 		else if(strcmp("-cu", argv[arg]) == 0) {
-			nm_upper_case_str(pathlist, pathno);
+			pathlist=nm_upper_case_str(pathlist, pathno);
 		}
 		//lowercase
 		else if(strcmp("-cl", argv[arg]) == 0) {
-			nm_lower_case_str(pathlist, pathno);
+			pathlist=nm_lower_case_str(pathlist, pathno);
 		}
 		//delete field
 		else if(strcmp("-df", argv[arg]) == 0) {
@@ -106,7 +106,7 @@ int main(int argc, char* *argv) {
 			if(argc-2-arg<1)
 				nm_error("Too less arguments left for delete field cmd.");
 			
-			nm_delete_field(pathlist, pathno, argv[arg+1], argv[arg+2]);
+			pathlist=nm_delete_field(pathlist, pathno, argv[arg+1], argv[arg+2]);
 			arg+=2;
 		}
 		//probably a file?

@@ -106,9 +106,9 @@ void nm_rename(char **old, char **new, int pathno) {
 	for(i=0; i<pathno; i++) {
 		rename(old[i], new[i]);
 		
-		//if new!=old path free, because no longer needed
-		if(new[i]!=old[i])
-			free(new[i]);
+		//if path changed, delete old path from memory
+		if(new[i]==old[i])
+			free(old[i]);
 	}
 	nm_msg("Renaming done.");
 }

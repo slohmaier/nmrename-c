@@ -30,10 +30,10 @@
 
 //delete from pos1 to pos2.
 //---
-void nm_delete(char* *pathlist, int pathno, char* cpos1, char* cpos2) {
+char **nm_delete(char* *pathlist, int pathno, char* cpos1, char* cpos2) {
 	//vars
 	//---
-	char* *newlist; //new pathlist
+	char **newlist; //new pathlist
 	int i;          //runner
 	
 	//create new pathlist
@@ -57,14 +57,16 @@ void nm_delete(char* *pathlist, int pathno, char* cpos1, char* cpos2) {
 	
 	//start renaming?
 	nm_rename(pathlist, newlist, pathno);
+	
+	return(newlist);
 }
 
 //replace str1 with str2
 //---
-void nm_replace_str(char **pathlist, int pathno, char *str1, char* str2) {
+char **nm_replace_str(char **pathlist, int pathno, char *str1, char* str2) {
 	//vars
 	//---
-	char* *newlist;        //new pathlist
+	char **newlist;        //new pathlist
 	int i;                 //runner
 	
 	//create new pathlist
@@ -84,14 +86,16 @@ void nm_replace_str(char **pathlist, int pathno, char *str1, char* str2) {
 	
 	//start renaming?
 	nm_rename(pathlist, newlist, pathno);
+	
+	return(newlist);
 }
 
 //delete str
 //---
-void nm_delete_str(char **pathlist, int pathno, char *str) {
+char **nm_delete_str(char **pathlist, int pathno, char *str) {
 	//vars
 	//---
-	char* *newlist;        //new pathlist
+	char **newlist;        //new pathlist
 	int i;                 //runner
 	
 	//create new pathlist
@@ -119,14 +123,16 @@ void nm_delete_str(char **pathlist, int pathno, char *str) {
 	
 	//start renaming?
 	nm_rename(pathlist, newlist, pathno);
+	
+	return(newlist);
 }
 
 //insert str at cpos
 //---
-void nm_insert_str(char **pathlist, int pathno, char *str, char* cpos) {
+char **nm_insert_str(char **pathlist, int pathno, char *str, char* cpos) {
 	//vars
 	//---
-	char* *newlist;        //new pathlist
+	char **newlist;        //new pathlist
 	int i;                 //runner
 	
 	//create new pathlist
@@ -145,14 +151,16 @@ void nm_insert_str(char **pathlist, int pathno, char *str, char* cpos) {
 	
 	//start renaming?
 	nm_rename(pathlist, newlist, pathno);
+	
+	return(newlist);
 }
 
 //camelcase str
 //---
-void nm_camel_case_str(char **pathlist, int pathno) {
+char **nm_camel_case_str(char **pathlist, int pathno) {
 	//vars
 	//---
-	char* *newlist;        //new pathlist
+	char **newlist;        //new pathlist
 	int i;                 //runner
 	
 	//create new pathlist
@@ -171,14 +179,16 @@ void nm_camel_case_str(char **pathlist, int pathno) {
 	
 	//start renaming?
 	nm_rename(pathlist, newlist, pathno);
+	
+	return(newlist);
 }
 
 //lowercase str
 //---
-void nm_lower_case_str(char **pathlist, int pathno) {
+char **nm_lower_case_str(char **pathlist, int pathno) {
 	//vars
 	//---
-	char* *newlist;        //new pathlist
+	char **newlist;        //new pathlist
 	int i;                 //runner
 	
 	//create new pathlist
@@ -197,14 +207,16 @@ void nm_lower_case_str(char **pathlist, int pathno) {
 	
 	//start renaming?
 	nm_rename(pathlist, newlist, pathno);
+	
+	return(newlist);
 }
 
 //uppercase str
 //---
-void nm_upper_case_str(char **pathlist, int pathno) {
+char **nm_upper_case_str(char **pathlist, int pathno) {
 	//vars
 	//---
-	char* *newlist;        //new pathlist
+	char **newlist;        //new pathlist
 	int i;                 //runner
 	
 	//create new pathlist
@@ -223,14 +235,16 @@ void nm_upper_case_str(char **pathlist, int pathno) {
 	
 	//start renaming?
 	nm_rename(pathlist, newlist, pathno);
+	
+	return(newlist);
 }
 
 //delete field cnum from str with delimiters dels
 //---
-void nm_delete_field(char **pathlist, int pathno, char *cnum, char *dels) {
+char **nm_delete_field(char **pathlist, int pathno, char *cnum, char *dels) {
 	//vars
 	//---
-	char* *newlist;        //new pathlist
+	char **newlist;        //new pathlist
 	int i;                 //runner
 	
 	//create new pathlist
@@ -249,4 +263,6 @@ void nm_delete_field(char **pathlist, int pathno, char *cnum, char *dels) {
 	
 	//start renaming?
 	nm_rename(pathlist, newlist, pathno);
+	
+	return(newlist);
 }
