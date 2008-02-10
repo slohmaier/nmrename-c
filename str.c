@@ -1,23 +1,23 @@
 /*
-  *str.c
-  *This file is part of nmrename
+ * str.c
+ * This file is part of nmrename
  *
-  *Copyright (C) 2007 - Stefan Lohmaier
+ * Copyright (C) 2007 - Stefan Lohmaier
  *
-  *nmrename is free software; you can redistribute it and/or modify
-  *it under the terms of the GNU General Public License as published by
-  *the Free Software Foundation; either version 2 of the License, or
-  *(at your option) any later version.
+ * nmrename is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
-  *nmrename is distributed in the hope that it will be useful,
-  *but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  *GNU General Public License for more details.
+ * nmrename is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
-  *You should have received a copy of the GNU General Public License
-  *along with nmrename; if not, write to the Free Software
-  *Foundation, Inc., 51 Franklin St, Fifth Floor, 
-  *Boston, MA  02110-1301  USA
+ * You should have received a copy of the GNU General Public License
+ * along with nmrename; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, 
+ * Boston, MA  02110-1301  USA
  */
  
 //headers
@@ -32,41 +32,44 @@
 //---
 char *nm_str_delete(char* str, char* cpos1, char* cpos2) {
 	//vars
+	//---
 	char *result;         //the returning string
 	int pos1, pos2;       //the real positions
 	int buff;             //buffer for pos-switching
 	int i,j=0;            //runners
 	int size=strlen(str); //size of string
 	
-	//make real positions
+	//convert the positions from strings into real numbers, exit on error.
 	if((pos1=nm_convert_pos(str, cpos1))==-1)
 		nm_error("\'%s\' is not a valid position.", cpos1);
 	if((pos2=nm_convert_pos(str, cpos2))==-1)
 		nm_error("\'%s\' is not a valid position.", cpos2);
 	
-	//need to flip positions?
+	//switch positions if 2nd position is smaller than first
 	if(pos1>pos2) {
 		buff=pos1;
 		pos1=pos2;
 		pos2=buff;
 	}
 	
-	//exit with NULL if whole string is to delete
+	//return error if whole filename would be deleted
 	if(pos1==0 && pos2==size-1)
 		return NULL;
 	
-	//create new string
+	//get memory for resulting string
 	result=(char *) malloc(sizeof(char)  *(size+1-pos1+pos2));
 	
-	//fill new string
+	//assign new string char by char
 	for(i=0; i<size; i++) {
+		//skip the part that should be deleted
 		if(i==pos1)
 			i=pos2+1;
+			
 		result[j++]=str[i];
 	}
 	result[j]='\0';
 	
-	//it worked!
+	//return new filename
 	return result;
 }
 
@@ -84,39 +87,40 @@ char *nm_str_replace(char* path, char* str1, char* str2) {
 	char *l;
 	char *result;           //resulting string
 	
-	//if size of new string is bigger,
-	//so allocate memory for worst case scenario
+	//Determine size of string for the worst case
 	if(size2>size1)
 		size=(strlen(path)/size1)*size2;
 	else
 		size=strlen(path);
 	
+	//get memory for the resulting char
 	result=(char *) malloc(sizeof(char)  *size);
 	
-	//replace for all paths
+	//assign resulting filename char by char
 	for(i=path, j=result; *i!='\0'; i++, j++) {
-		//check if char is first char of str1
-		//loop for str1 series
+		//if current char is 1st char of the replaced string investigate
+		//further
 		while(*i==*str1) {
-			//run till end or first char that is not the same
+			//check char by char if i is the start for the replaced string
 			for(k=str1, l=i; *k!='\0'; k++, l++)
 				if(*k!=*l) break;
 			
-			//if k is at end replace
+			//if the check went to \0 we have to replace the string now
 			if(*k=='\0') {
-				//write str2 in str1's place
+				//write the replacing string in the place of the replaced
+				//one
 				for(k=str2; *k!='\0'; k++, j++)
 					*j=*k;
 				
-				//jump i behind str1's occurence
+				//continue where the replaced string ends
 				i+=sizeof(char)*size1;
 			}
 			else break;
 		}
+		
 		*j=*i;
 	}
 	
-	//add end if not allready there
 	if(*j!='\0')
 		*j='\0';
 	
@@ -134,28 +138,31 @@ char *nm_str_insert(char* path, char* str, char* cpos) {
 	char *j;
 	char *k;
 	
-	//create resulting string
-	result=(char *) malloc(sizeof(char)  *(strlen(path)+strlen(str)+1));
+	//get memory for resulting string (orig. filename + the inserted string)
+	result=(char *) malloc(sizeof(char) * (strlen(path) + strlen(str)+1));
 	
-	//create position
+	//convert the string position into an numerical on
 	pos=&path[nm_convert_pos(path, cpos)];
+	
+	//correct position if from right so from right behaves like from left
 	if(cpos[0]=='-')
 		pos++;
 	
 	//fill new string
 	for(i=path, j=result; *i!='\0'; i++, j++) {
+		//if we are at the insert position insert string char by char
 		if(i==pos)
 			for(k=str; *k!='\0'; k++, j++)
 				*j=*k;
+		
 		*j=*i;
 	}
 	
-	//position is at end?
+	//if the position is at the end the loop missed it.
 	if(i==pos)
 			for(k=str; *k!='\0'; k++, j++)
 				*j=*k;
 	
-	//add end if not allready there
 	if(*j!='\0')
 		*j='\0';
 	
@@ -172,24 +179,23 @@ char *nm_str_case_camel(char* str) {
 	char *i=str;	//runner
 	char *j;
 	
-	//create resulting string
-	result=(char *) malloc(sizeof(char)  *(strlen(str)+1));
+	//get memory for resulting string
+	result=(char *) malloc(sizeof(char) * (strlen(str)+1));
 	j=result;
 	
-	//parse everything
 	do {
-		//beginning of a word?
+		//Beginning of a word?
 		if(word==0 && nm_check_ws(*i)==0) {
 			word=1;
 			
-			//convert small case to uppercase
+			//Convert small case to upper case
 			if(*i>='a' && *i<='z')
 				*j=*i+'A'-'a';
 			else
 				*j=*i;
 		}
 		else {
-			//check inword status
+			//If we were in a word and are no longer set wordstatus
 			if(word==1 && nm_check_ws(*i)==1)
 				word=0;
 			
@@ -200,7 +206,8 @@ char *nm_str_case_camel(char* str) {
 		i++;
 		j++;
 	} while(*i!='\0');
-	*j=*i;
+	
+	*j='\0';
 	
 	return(result);
 }
@@ -214,8 +221,8 @@ char *nm_str_case_lower(char *str) {
 	char *i=str;	//runners
 	char *j;
 	
-	//create resulting string
-	result=(char *) malloc(sizeof(char)  *(strlen(str)+1));
+	//get memory for resulting string
+	result=(char *) malloc(sizeof(char) * (strlen(str)+1));
 	
 	//lower case everything
 	for(j=result; *i!='\0'; j++, i++)
@@ -236,8 +243,8 @@ char *nm_str_case_upper(char *str) {
 	char *i=str;	//runners
 	char *j;
 	
-	//create resulting string
-	result=(char *) malloc(sizeof(char)  *(strlen(str)+1));
+	//get memory for resulting string
+	result=(char *) malloc(sizeof(char) * (strlen(str)+1));
 	
 	//upercase everything
 	for(j=result; *i!='\0'; j++, i++)
@@ -258,13 +265,14 @@ char *nm_str_delete_field(char *str, char *cnum, char *dels) {
 	int ps=0;		//start position for deleting
 	int pe=size+1; 	//end position for deleting
 	int i;			//runners
-	int j=0;
+	int j=0;		//runner for current field
 	
-	//convert cnum to field
+	//convert string field position to numerical one
 	field=strtol(cnum, &result, 10);
 	if(*result!='\0') nm_error("'%s' is not a valid field number.");
 	
 	//from left
+	//---
 	if(cnum[0]!='-')
 		for(i=0; i<=size; i++) {
 			//set end if fieldend
@@ -278,6 +286,7 @@ char *nm_str_delete_field(char *str, char *cnum, char *dels) {
 				ps=i;
 		}
 	//from right
+	//---
 	else
 		for(i=size, field=field*(-1); i>=0; i--) {
 			//set end if fieldend
@@ -295,16 +304,17 @@ char *nm_str_delete_field(char *str, char *cnum, char *dels) {
 	if(ps==0 && pe==size+1)
 		return(str);
 	
-	//create result
+	//get memory for resulting string
 	result=(char *) malloc(sizeof(char) * (strlen(str)-pe+ps));
 	
 	//assign str to result
 	for(i=0, j=0; i<=size; i++, j++) {
-		//skip field
+		//skip the deleted field
 		if(i==ps) i=pe;
 		
 		result[j]=str[i];
 	}
+	
 	if(result[j]!='\0')
 		result[j]='\0';
 		

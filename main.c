@@ -1,23 +1,23 @@
 /*
-  *main.c
-  *This file is part of nmrename
+ * main.c
+ * This file is part of nmrename
  *
-  *Copyright (C) 2007 - Stefan Lohmaier
+ * Copyright (C) 2007 - Stefan Lohmaier
  *
-  *nmrename is free software; you can redistribute it and/or modify
-  *it under the terms of the GNU General Public License as published by
-  *the Free Software Foundation; either version 2 of the License, or
-  *(at your option) any later version.
+ * nmrename is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
-  *nmrename is distributed in the hope that it will be useful,
-  *but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  *GNU General Public License for more details.
+ * nmrename is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
-  *You should have received a copy of the GNU General Public License
-  *along with nmrename; if not, write to the Free Software
-  *Foundation, Inc., 51 Franklin St, Fifth Floor, 
-  *Boston, MA  02110-1301  USA
+ * You should have received a copy of the GNU General Public License
+ * along with nmrename; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, 
+ * Boston, MA  02110-1301  USA
  */
  
 //headers
@@ -34,7 +34,7 @@ unsigned short force=0; //force renaming? no questions asked
 
 //main-Program
 //---
-int main(int argc, char* *argv) {
+int main(int argc, char **argv) {
 	//vars
 	int arg=1;            //counter for argument parsing. (start at first argument)
 	char **pathlist=NULL; //list for paths to rename
@@ -125,13 +125,15 @@ int main(int argc, char* *argv) {
 			pathlist=nm_delete_field(pathlist, pathno, argv[arg+1], argv[arg+2]);
 			arg+=2;
 		}
-		//probably a file?
+		
+		//so it's not a command, probably a file?
 		else if(is_path(argv[arg])==1) {
 			nm_msg("Adding \'%s\' to filelist.", argv[arg]);
-			pathlist=(char **) realloc(pathlist, sizeof(char *)  *(pathno+1));
+			pathlist=(char **) realloc(pathlist, sizeof(char *) * (pathno+1));
 			pathlist[pathno++]=argv[arg];
 		}
-		//neither file nor command
+		
+		//so it's neither file nor command
 		else
 			nm_error("%d. argument \'%s\' is neither a file nor a command!", arg, argv[arg]);
 		

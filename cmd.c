@@ -1,23 +1,23 @@
 /*
-  *cmd.c
-  *This file is part of nmrename
+ * cmd.c
+ * This file is part of nmrename
  *
-  *Copyright (C) 2007 - Stefan Lohmaier
+ * Copyright (C) 2007 - Stefan Lohmaier
  *
-  * nmrename is free software; you can redistribute it and/or modify
-  *it under the terms of the GNU General Public License as published by
-  *the Free Software Foundation; either version 2 of the License, or
-  *(at your option) any later version.
+ *  nmrename is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
-  * nmrename is distributed in the hope that it will be useful,
-  *but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  *GNU General Public License for more details.
+ *  nmrename is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
-  *You should have received a copy of the GNU General Public License
-  *along with  nmrename; if not, write to the Free Software
-  *Foundation, Inc., 51 Franklin St, Fifth Floor, 
-  *Boston, MA  02110-1301  USA
+ * You should have received a copy of the GNU General Public License
+ * along with  nmrename; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, 
+ * Boston, MA  02110-1301  USA
  */
  
 //headers
@@ -36,8 +36,8 @@ char **nm_delete(char* *pathlist, int pathno, char* cpos1, char* cpos2) {
 	char **newlist; //new pathlist
 	int i;          //runner
 	
-	//create new pathlist
-	newlist=(char **) malloc(sizeof(char *)  *pathno);
+	//get memory for new pathlist
+	newlist=(char **) malloc(sizeof(char *) * pathno);
 	
 	//welcome
 	nm_msg("");
@@ -46,7 +46,7 @@ char **nm_delete(char* *pathlist, int pathno, char* cpos1, char* cpos2) {
 	
 	//fill new list
 	for(i=0; i<pathno; i++) {
-		//delete. on error just copy
+		//delete, on error just copy
 		if((newlist[i]=nm_str_delete(pathlist[i], cpos1, cpos2))==NULL) {
 			newlist[i]=pathlist[i];
 			nm_warn("Omitting \'%s\'. Would delete whole filename", newlist[i]);
@@ -55,7 +55,7 @@ char **nm_delete(char* *pathlist, int pathno, char* cpos1, char* cpos2) {
 			nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
 	}
 	
-	//start renaming?
+	//start renaming
 	nm_rename(pathlist, newlist, pathno);
 	
 	return(newlist);
@@ -69,8 +69,8 @@ char **nm_replace_str(char **pathlist, int pathno, char *str1, char* str2) {
 	char **newlist;        //new pathlist
 	int i;                 //runner
 	
-	//create new pathlist
-	newlist=(char **) malloc(sizeof(char *)  *pathno);
+	//get memory for new pathlist
+	newlist=(char **) malloc(sizeof(char *) * pathno);
 	
 	//welcome
 	nm_msg("");
@@ -80,11 +80,13 @@ char **nm_replace_str(char **pathlist, int pathno, char *str1, char* str2) {
 	//fill new list
 	for(i=0; i<pathno; i++) {
 		newlist[i]=nm_str_replace(pathlist[i], str1, str2);
+		
+		//only show if there is a change in the filename
 		if(strcmp(newlist[i],pathlist[i])!=0)
 			nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
 	}
 	
-	//start renaming?
+	//start renaming
 	nm_rename(pathlist, newlist, pathno);
 	
 	return(newlist);
@@ -98,8 +100,8 @@ char **nm_delete_str(char **pathlist, int pathno, char *str) {
 	char **newlist;        //new pathlist
 	int i;                 //runner
 	
-	//create new pathlist
-	newlist=(char **) malloc(sizeof(char *)  *pathno);
+	//get memory for new pathlist
+	newlist=(char **) malloc(sizeof(char *) * pathno);
 	
 	//welcome
 	nm_msg("");
@@ -117,11 +119,12 @@ char **nm_delete_str(char **pathlist, int pathno, char *str) {
 			nm_warn("Omitting \'%s\'. Would delete whole pathname", newlist[i]);
 		}
 		else
+			//only show if there is a change in the filename
 			if(strcmp(newlist[i],pathlist[i])!=0)
 				nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
 	}
 	
-	//start renaming?
+	//start renaming
 	nm_rename(pathlist, newlist, pathno);
 	
 	return(newlist);
@@ -135,8 +138,8 @@ char **nm_insert_str(char **pathlist, int pathno, char *str, char* cpos) {
 	char **newlist;        //new pathlist
 	int i;                 //runner
 	
-	//create new pathlist
-	newlist=(char **) malloc(sizeof(char *)  *pathno);
+	//get memory for new pathlist
+	newlist=(char **) malloc(sizeof(char *) * pathno);
 	
 	//welcome
 	nm_msg("");
@@ -149,7 +152,7 @@ char **nm_insert_str(char **pathlist, int pathno, char *str, char* cpos) {
 		nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
 	}
 	
-	//start renaming?
+	//start renaming
 	nm_rename(pathlist, newlist, pathno);
 	
 	return(newlist);
@@ -163,8 +166,8 @@ char **nm_camel_case_str(char **pathlist, int pathno) {
 	char **newlist;        //new pathlist
 	int i;                 //runner
 	
-	//create new pathlist
-	newlist=(char **) malloc(sizeof(char *)  *pathno);
+	//get memory for new pathlist
+	newlist=(char **) malloc(sizeof(char *) * pathno);
 	
 	//welcome
 	nm_msg("");
@@ -174,10 +177,13 @@ char **nm_camel_case_str(char **pathlist, int pathno) {
 	//fill new list
 	for(i=0; i<pathno; i++) {
 		newlist[i]=nm_str_case_camel(pathlist[i]);
-		nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
+		
+		//only show if there is a change in the filename
+		if(strcmp(newlist[i],pathlist[i])!=0)
+			nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
 	}
 	
-	//start renaming?
+	//start renaming
 	nm_rename(pathlist, newlist, pathno);
 	
 	return(newlist);
@@ -191,8 +197,8 @@ char **nm_lower_case_str(char **pathlist, int pathno) {
 	char **newlist;        //new pathlist
 	int i;                 //runner
 	
-	//create new pathlist
-	newlist=(char **) malloc(sizeof(char *)  *pathno);
+	//get memory for new pathlist
+	newlist=(char **) malloc(sizeof(char *) * pathno);
 	
 	//welcome
 	nm_msg("");
@@ -202,10 +208,13 @@ char **nm_lower_case_str(char **pathlist, int pathno) {
 	//fill new list
 	for(i=0; i<pathno; i++) {
 		newlist[i]=nm_str_case_lower(pathlist[i]);
-		nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
+		
+		//only show if there is a change in the filename
+		if(strcmp(newlist[i],pathlist[i])!=0)
+			nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
 	}
 	
-	//start renaming?
+	//start renaming
 	nm_rename(pathlist, newlist, pathno);
 	
 	return(newlist);
@@ -219,8 +228,8 @@ char **nm_upper_case_str(char **pathlist, int pathno) {
 	char **newlist;        //new pathlist
 	int i;                 //runner
 	
-	//create new pathlist
-	newlist=(char **) malloc(sizeof(char *)  *pathno);
+	//get memory for new pathlist
+	newlist=(char **) malloc(sizeof(char *) * pathno);
 	
 	//welcome
 	nm_msg("");
@@ -230,10 +239,13 @@ char **nm_upper_case_str(char **pathlist, int pathno) {
 	//fill new list
 	for(i=0; i<pathno; i++) {
 		newlist[i]=nm_str_case_upper(pathlist[i]);
-		nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
+		
+		//only show if there is a change in the filename
+		if(strcmp(newlist[i],pathlist[i])!=0)
+			nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
 	}
 	
-	//start renaming?
+	//start renaming
 	nm_rename(pathlist, newlist, pathno);
 	
 	return(newlist);
@@ -247,8 +259,8 @@ char **nm_delete_field(char **pathlist, int pathno, char *cnum, char *dels) {
 	char **newlist;        //new pathlist
 	int i;                 //runner
 	
-	//create new pathlist
-	newlist=(char **) malloc(sizeof(char *)  *pathno);
+	//get memory for new pathlist
+	newlist=(char **) malloc(sizeof(char *) * pathno);
 	
 	//welcome
 	nm_msg("");
@@ -258,10 +270,13 @@ char **nm_delete_field(char **pathlist, int pathno, char *cnum, char *dels) {
 	//fill new list
 	for(i=0; i<pathno; i++) {
 		newlist[i]=nm_str_delete_field(pathlist[i], cnum, dels);
-		nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
+		
+		//only show if there is a change in the filename
+		if(strcmp(newlist[i],pathlist[i])!=0)
+			nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
 	}
 	
-	//start renaming?
+	//start renaming
 	nm_rename(pathlist, newlist, pathno);
 	
 	return(newlist);

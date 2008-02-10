@@ -1,25 +1,27 @@
 /*
-  *funcs.c
-  *This file is part of nmrename
+ * funcs.c
+ * This file is part of nmrename
  *
-  *Copyright (C) 2007 - Stefan Lohmaier
+ * Copyright (C) 2007 - Stefan Lohmaier
  *
-  *nmrename is free software; you can redistribute it and/or modify
-  *it under the terms of the GNU General Public License as published by
-  *the Free Software Foundation; either version 2 of the License, or
-  *(at your option) any later version.
+ * nmrename is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
-  *nmrename is distributed in the hope that it will be useful,
-  *but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  *GNU General Public License for more details.
+ * nmrename is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
-  *You should have received a copy of the GNU General Public License
-  *along with nmrename; if not, write to the Free Software
-  *Foundation, Inc., 51 Franklin St, Fifth Floor, 
-  *Boston, MA  02110-1301  USA
+ * You should have received a copy of the GNU General Public License
+ * along with nmrename; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, 
+ * Boston, MA  02110-1301  USA
  */
- 
+
+//headers
+//---
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <string.h>
@@ -41,7 +43,7 @@ unsigned short is_path(char *path) {
 		return(1);
 }
 
-//create real positions from char pos
+//create numeric positions from string positions
 //---
 int nm_convert_pos(char *str, char* cpos) {
 	//vars
@@ -60,7 +62,7 @@ int nm_convert_pos(char *str, char* cpos) {
 	if(cpos[0]=='-') 
 		pos=strlen(str)-1+pos;
 	
-	//polish position (not smaller than 0. not bigger then size of str
+	//polish position (not smaller than 0. not bigger then size of str)
 	if(pos<0)
 		pos=0;
 	if(pos>strlen(str)-1)
@@ -77,9 +79,12 @@ void nm_rename(char **old, char **new, int pathno) {
 	char answer; //answer from question
 	int i,j;     //runner
 	
+	//Only ask if force is not set.
 	if(force==0) {
 		nm_msg("");
 		nm_msg("Start renaming?");
+		
+		//ask until user gives a valid answer.
 		do {
 			printf("<< [y/n]:");
 			fflush(stdin);
@@ -92,9 +97,10 @@ void nm_rename(char **old, char **new, int pathno) {
 			return;
 	}
 	
-	//check for duplicates
 	nm_msg("");
 	nm_msg("Checking for Duplicate paths.");
+	
+	//check for duplicates
 	for(i=0; i<pathno; i++)
 		for(j=0; j<pathno; j++) {
 			if(j!=i && strcmp(new[i], new[j])==0)
@@ -117,12 +123,14 @@ void nm_rename(char **old, char **new, int pathno) {
 //---
 short nm_check_ws(char c) {
 	switch (c) {
+		//whitespace list
 		case ' ':
 		case '\t':
 		case '\n':
 		case '-':
 			return(1);
 		
+		//not a whitespace
 		default:
 			return(0);
 	}
@@ -132,8 +140,10 @@ short nm_check_ws(char c) {
 //---
 short nm_check_partof(char c, char *string) {
 	char *i;
+	
 	for(i=string; *i!='\0'; i++)
 		if(*i==c)
 			return(1);
+	
 	return(0);
 }
