@@ -1,7 +1,7 @@
 CC=gcc
 #CFLAGS=-Wall -g
 CFLAGS=-O2
-OBJECTS=main.o msg.o funcs.o cmd.o str.o
+OBJECTS=nmrename.o msg.o funcs.o cmd.o str.o
 PREFIX=/usr
 
 all: $(OBJECTS)
