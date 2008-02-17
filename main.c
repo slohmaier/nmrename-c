@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
 			pathlist=nm_lower_case_str(pathlist, pathno);
 		}
 		//delete field
-		else if(strcmp("-df", argv[arg]) == 0) {
+		else if(strcmp("-fd", argv[arg]) == 0) {
 			//enough arguments left?
 			if(argc-2-arg<1)
 				nm_error("Too less arguments left for delete field cmd.");

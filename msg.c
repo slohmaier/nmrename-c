@@ -81,7 +81,7 @@ void nm_help(void) {
 		"  -sr [S1] [S2]    : Replace all occurences of S1 with S2.\n"
 		"  -sd [S]          : Delete all occurences of S.\n"
 		"  -si [S] [POS]    : Insert S at POS.\n"
-		"  -df [POS] [S]	: Deletes field POS. Fielddelimiters are in S.\n"
+		"  -fd [POS] [S]	: Deletes field POS. Fielddelimiters are in S.\n"
 		"\n"
 		"  [PATHLIST] is a list of the paths (dirs and files) you want to rename.\n"
 		"  [POS*] can be 0,1,2,... or -0,-1,-2,... ('-' starts counting from the right).\n"
