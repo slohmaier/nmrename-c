@@ -27,6 +27,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "funcs.h"
 #include "msg.h"
 
 //globals
@@ -146,4 +147,57 @@ short nm_check_partof(char c, char *string) {
 			return(1);
 	
 	return(0);
+}
+
+//convert field to start and end pointers off the field
+struct nmfield *nm_convert_field(char *str, char *cfield, char *dels) {
+	//vars
+	//---
+	struct nmfield *result;	//resulting struct
+	char *p;				//result for strtol
+	int size=strlen(str)-1;
+	int field;				//field number
+	int i=0;				//runners
+	int j=0;
+	
+	//get memory for resulting struct and assign start values
+	result=(struct nmfield *) malloc(sizeof(struct nmfield));
+	result->string=str;
+	result->start=0;
+	result->end=size+1;
+	
+	//convert string field position to numerical one
+	field=strtol(cfield, &p, 10);
+	if(*p!='\0') nm_error("'%s' is not a valid field number.");
+	
+	//from left
+	//---
+	if(cfield[0]!='-')
+		for(i=0; i<=size; i++) {
+			//set end if fieldend
+			if(j==field && nm_check_partof(str[i], dels)==1)
+				result->end=i;
+			//new field?
+			if(nm_check_partof(str[i], dels)==1)
+				j++;
+			//set start if field at field
+			if(j==field && nm_check_partof(str[i], dels)==1)
+				result->start=i;
+		}
+	//from right
+	//---
+	else
+		for(i=size, field=field*(-1); i>=0; i--) {
+			//set end if fieldend
+			if(j==field && nm_check_partof(str[i], dels)==1)
+				result->start=i;
+			//new field?
+			if(nm_check_partof(str[i], dels)==1)
+				j++;
+			//set start if field at field
+			if(j==field && nm_check_partof(str[i], dels)==1)
+				result->end=i;
+		}
+	
+	return(result);
 }

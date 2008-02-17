@@ -260,63 +260,35 @@ char *nm_str_delete_field(char *str, char *cnum, char *dels) {
 	//vars
 	//---
 	char *result;	//resulting char
-	int field;		//field to delete
-	int size=strlen(str)-1;
-	int ps=0;		//start position for deleting
-	int pe=size+1; 	//end position for deleting
+	struct nmfield* field;
 	int i;			//runners
+	int size=strlen(str)-1;
 	int j=0;		//runner for current field
 	
-	//convert string field position to numerical one
-	field=strtol(cnum, &result, 10);
-	if(*result!='\0') nm_error("'%s' is not a valid field number.");
-	
-	//from left
-	//---
-	if(cnum[0]!='-')
-		for(i=0; i<=size; i++) {
-			//set end if fieldend
-			if(j==field && nm_check_partof(str[i], dels)==1)
-				pe=i;
-			//new field?
-			if(nm_check_partof(str[i], dels)==1)
-				j++;
-			//set start if field at field
-			if(j==field && nm_check_partof(str[i], dels)==1)
-				ps=i;
-		}
-	//from right
-	//---
-	else
-		for(i=size, field=field*(-1); i>=0; i--) {
-			//set end if fieldend
-			if(j==field && nm_check_partof(str[i], dels)==1)
-				ps=i;
-			//new field?
-			if(nm_check_partof(str[i], dels)==1)
-				j++;
-			//set start if field at field
-			if(j==field && nm_check_partof(str[i], dels)==1)
-				pe=i;
-		}
+	//convert field into numers
+	field=nm_convert_field(str, cnum, dels);
 	
 	//return string if no field to delete
-	if(ps==0 && pe==size+1)
+	if(field->start==0 && field->end==size+1)
 		return(str);
 	
+	printf("s:%d e:%d", field->start, field->end);
+	
 	//get memory for resulting string
-	result=(char *) malloc(sizeof(char) * (strlen(str)-pe+ps));
+	result=(char *) malloc(sizeof(char) * (strlen(str)-field->end+field->start));
 	
 	//assign str to result
 	for(i=0, j=0; i<=size; i++, j++) {
 		//skip the deleted field
-		if(i==ps) i=pe;
+		if(i==field->start) i=field->end;
 		
 		result[j]=str[i];
 	}
 	
 	if(result[j]!='\0')
 		result[j]='\0';
+	
+	free(field);
 		
 	return(result);
 }
