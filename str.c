@@ -272,8 +272,6 @@ char *nm_str_delete_field(char *str, char *cnum, char *dels) {
 	if(field->start==0 && field->end==size+1)
 		return(str);
 	
-	printf("s:%d e:%d", field->start, field->end);
-	
 	//get memory for resulting string
 	result=(char *) malloc(sizeof(char) * (strlen(str)-field->end+field->start));
 	
