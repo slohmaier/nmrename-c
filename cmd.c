@@ -281,3 +281,34 @@ char **nm_delete_field(char **pathlist, int pathno, char *cnum, char *dels) {
 	
 	return(newlist);
 }
+
+//delete field cnum from str with delimiters dels
+//---
+ char **nm_switch_field(char **pathlist, int pathno, char *f1, char *f2, char *dels) {
+	//vars
+	//---
+	char **newlist;        //new pathlist
+	int i;                 //runner
+	
+	//get memory for new pathlist
+	newlist=(char **) malloc(sizeof(char *) * pathno);
+	
+	//welcome
+	nm_msg("");
+	nm_msg("\033[1mSwitching field %s with field %s. delimiters are %s :\033[m", f1, f2, dels);
+	nm_msg("");
+	
+	//fill new list
+	for(i=0; i<pathno; i++) {
+		newlist[i]=nm_str_switch_field(pathlist[i], f1, f2, dels);
+		
+		//only show if there is a change in the filename
+		if(strcmp(newlist[i],pathlist[i])!=0)
+			nm_msg("\'%s\' --> \'%s\'", pathlist[i], newlist[i]);
+	}
+	
+	//start renaming
+	nm_rename(pathlist, newlist, pathno);
+	
+	return(newlist);
+}

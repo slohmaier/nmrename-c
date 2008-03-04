@@ -157,14 +157,14 @@ struct nmfield *nm_convert_field(char *str, char *cfield, char *dels) {
 	char *p;				//result for strtol
 	int size=strlen(str)-1;
 	int field;				//field number
-	int i=0;				//runners
-	int j=0;
+	int i=0;				//char runner
+	int j=0;				//current field number
 	
 	//get memory for resulting struct and assign start values
 	result=(struct nmfield *) malloc(sizeof(struct nmfield));
 	result->string=str;
 	result->start=0;
-	result->end=size+1;
+	result->end=size;
 	
 	//convert string field position to numerical one
 	field=strtol(cfield, &p, 10);
@@ -176,13 +176,13 @@ struct nmfield *nm_convert_field(char *str, char *cfield, char *dels) {
 		for(i=0; i<=size; i++) {
 			//set end if fieldend
 			if(j==field && nm_check_partof(str[i], dels)==1)
-				result->end=i;
+				result->end=i-1; //-1 because we are at the delimiter
 			//new field?
 			if(nm_check_partof(str[i], dels)==1)
 				j++;
 			//set start if field at field
 			if(j==field && nm_check_partof(str[i], dels)==1)
-				result->start=i;
+				result->start=i+1; //+1 because we are at the delimiter
 		}
 	//from right
 	//---
@@ -190,13 +190,13 @@ struct nmfield *nm_convert_field(char *str, char *cfield, char *dels) {
 		for(i=size, field=field*(-1); i>=0; i--) {
 			//set end if fieldend
 			if(j==field && nm_check_partof(str[i], dels)==1)
-				result->start=i;
+				result->start=i+1; //+1 because we are at the delimiter
 			//new field?
 			if(nm_check_partof(str[i], dels)==1)
 				j++;
 			//set start if field at field
 			if(j==field && nm_check_partof(str[i], dels)==1)
-				result->end=i;
+				result->end=i-1; //-1 because we are at the delimiter
 		}
 	
 	return(result);

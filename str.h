@@ -27,3 +27,4 @@ char *nm_str_case_camel(char* str);
 char *nm_str_case_lower(char *str);
 char *nm_str_case_upper(char *str);
 char *nm_str_delete_field(char *str, char *cnum, char *dels);
+char *nm_str_switch_field(char *str, char *f1, char *f2, char *dels);

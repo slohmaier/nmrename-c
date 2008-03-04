@@ -256,30 +256,40 @@ char *nm_str_case_upper(char *str) {
 	return(result);
 }
 
+//delete field cnum from str. fields delimiters are in dels.
+//---
 char *nm_str_delete_field(char *str, char *cnum, char *dels) {
 	//vars
 	//---
 	char *result;	//resulting char
-	struct nmfield* field;
+	struct nmfield *field;
 	int i;			//runners
 	int size=strlen(str)-1;
 	int j=0;		//runner for current field
 	
-	//convert field into numers
+	//convert field into integers
 	field=nm_convert_field(str, cnum, dels);
 	
 	//return string if no field to delete
-	if(field->start==0 && field->end==size+1)
+	if(field->start==0 && field->end==size)
 		return(str);
 	
 	//get memory for resulting string
-	result=(char *) malloc(sizeof(char) * (strlen(str)-field->end+field->start));
+	result=(char *) malloc(sizeof(char) * (strlen(str)-field->end+field->start-1));
 	
 	//assign str to result
 	for(i=0, j=0; i<=size; i++, j++) {
 		//skip the deleted field
-		if(i==field->start) i=field->end;
-		
+		if(i==field->start) {
+			//if field is at the end use the delimiter in front of the field
+			if(field->end==size) {
+				result[j]=str[i-1];
+				i=field->end+1;
+			}
+			//skip it
+			else
+				i=field->end+2;
+		}
 		result[j]=str[i];
 	}
 	
@@ -289,4 +299,51 @@ char *nm_str_delete_field(char *str, char *cnum, char *dels) {
 	free(field);
 		
 	return(result);
+}
+
+//switch field f1 with field f2. fields delimiters are in dels.
+//---
+char *nm_str_switch_field(char *str, char *f1, char *f2, char *dels) {
+	//vars
+	//---
+	char *result;	//resulting char;
+	struct nmfield *field1, *field2; //the 2 fields
+	int size=strlen(str);
+	int i;			//runners
+	int j;
+	int k;
+	
+	//convert fields into integers
+	field1=nm_convert_field(str, f1, dels);
+	field2=nm_convert_field(str, f2, dels);
+	
+	//get memory for result
+	result=(char *) malloc(sizeof(char) * size);
+	
+	printf("f1: %d|%d  f2: %d|%d  size:%d\n\n", field1->start, field1->end, field2->start, field2->end, size);
+	
+	//assign result
+	for(i=0, j=0; i<=size; i++, j++) {
+		if(i==field1->start) {
+			for(k=field2->start, i=field1->end; k<=field2->end; k++, j++) {
+				result[j]=str[k];
+				printf("i:%d j:%d k:%d char:%c\n", i, j, k, str[k]);
+			}
+			j--; //j gets increased by the for loop, but j should remain the same
+		}
+		else if(i==field2->start) {
+			for(k=field1->start, i=field2->end; k<=field1->end; k++, j++) {
+				result[j]=str[k];
+				printf("i:%d j:%d k:%d char:%c\n", i, j, k, str[k]);
+			}
+			j--; //j gets increased by the for loop, but j should remain the same
+		}
+		else {
+			result[j]=str[i];
+			printf("i:%d j:%d k:  char:%c\n", i, j, str[i]);
+		}
+	}
+	result[j]=str[i];
+	
+	return result;
 }

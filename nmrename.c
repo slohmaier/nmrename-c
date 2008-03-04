@@ -125,6 +125,15 @@ int main(int argc, char **argv) {
 			pathlist=nm_delete_field(pathlist, pathno, argv[arg+1], argv[arg+2]);
 			arg+=2;
 		}
+		//switch fields
+		else if(strcmp("-fs", argv[arg]) == 0) {
+			//enough arguments left?
+			if(argc-3-arg<1)
+				nm_error("Too less arguments left for switch field cmd.");
+			
+			pathlist=nm_switch_field(pathlist, pathno, argv[arg+1], argv[arg+2], argv[arg+3]);
+			arg+=3;
+		}
 		
 		//so it's not a command, probably a file?
 		else if(is_path(argv[arg])==1) {

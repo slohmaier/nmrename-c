@@ -28,3 +28,4 @@ char **nm_camel_case_str(char **pathlist, int pathno);
 char **nm_upper_case_str(char **pathlist, int pathno);
 char **nm_lower_case_str(char **pathlist, int pathno);
 char **nm_delete_field(char **pathlist, int pathno, char *cnum, char *dels);
+char **nm_switch_field(char **pathlist, int pathno, char *f1, char *f2, char *dels);
