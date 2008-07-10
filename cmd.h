@@ -20,12 +20,20 @@
  * Boston, MA  02110-1301  USA
  */
 
-char **nm_delete(char* *pathlist, int pathno, char* cpos1, char* cpos2);
-char **nm_replace_str(char **pathlist, int pathno, char *str1, char* str2);
-char **nm_delete_str(char **pathlist, int pathno, char *str);
-char **nm_insert_str(char **pathlist, int pathno, char *str, char* cpos);
-char **nm_camel_case_str(char **pathlist, int pathno);
-char **nm_upper_case_str(char **pathlist, int pathno);
-char **nm_lower_case_str(char **pathlist, int pathno);
-char **nm_delete_field(char **pathlist, int pathno, char *cnum, char *dels);
-char **nm_switch_field(char **pathlist, int pathno, char *f1, char *f2, char *dels);
+enum enumnmcmd {
+	nmcmderror=0,
+	nmcmdhelp,
+	nmcmddelete,
+	nmcmdstrreplace,
+	nmcmdstrdelete,
+	nmcmdstrinsert,
+	nmcmdstrcasecamel,
+	nmcmdstrcaseupper,
+	nmcmdstrcaselower,
+	nmcmdfielddelete,
+	nmcmdfieldswitch,
+	nmcmdforce
+};
+typedef enum enumnmcmd nmcmd;
+
+void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1, char *arg2, char *arg3);

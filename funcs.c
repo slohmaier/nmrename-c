@@ -72,54 +72,6 @@ int nm_convert_pos(char *str, char* cpos) {
 	return pos;
 }
 
-//rename paths from old to new
-//---
-void nm_rename(char **old, char **new, int pathno) {
-	//vars
-	//---
-	char answer; //answer from question
-	int i,j;     //runner
-	
-	//Only ask if force is not set.
-	if(force==0) {
-		nm_msg("");
-		nm_msg("Start renaming?");
-		
-		//ask until user gives a valid answer.
-		do {
-			printf("<< [y/n]:");
-			fflush(stdin);
-			answer=getchar();
-			if(answer!='\n') getchar();
-		} while(answer!='y' && answer!='n');
-		
-		//exit if no
-		if(answer=='n')
-			return;
-	}
-	
-	nm_msg("");
-	nm_msg("Checking for Duplicate paths.");
-	
-	//check for duplicates
-	for(i=0; i<pathno; i++)
-		for(j=0; j<pathno; j++) {
-			if(j!=i && strcmp(new[i], new[j])==0)
-				nm_error("More than one path would be renamed to '%s'", new[i]);
-		}
-	
-	//rename everything
-	nm_msg("Starting renaming...");
-	for(i=0; i<pathno; i++) {
-		rename(old[i], new[i]);
-		
-		//if path changed, delete old path from memory
-		if(new[i]==old[i])
-			free(old[i]);
-	}
-	nm_msg("Renaming done.");
-}
-
 // is c a whitespace?
 //---
 short nm_check_ws(char c) {

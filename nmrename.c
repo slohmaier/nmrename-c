@@ -24,9 +24,11 @@
 //---
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "msg.h"
 #include "funcs.h"
 #include "cmd.h"
+#include "nmopt.h"
 
 //globals
 //---
@@ -36,120 +38,69 @@ unsigned short force=0; //force renaming? no questions asked
 //---
 int main(int argc, char **argv) {
 	//vars
-	int arg=1;            //counter for argument parsing. (start at first argument)
-	char **pathlist=NULL; //list for paths to rename
-	int pathno=0;         //count for paths in pathlist
+	int argindex=0;
+	static struct nmopts options[] = {
+		{nmcmdhelp, "-h", 0, NULL},
+		{nmcmdforce, "-f", 0, NULL},
+		{nmcmddelete, "-d", 2, "Deleting from %s to %s:"},
+		{nmcmdstrdelete, "-sd", 1, "Deleting \'%s\'"},
+		{nmcmdstrreplace, "-sr", 2, "Replacing \'%s\' with \'%s\'"},
+		{nmcmdstrinsert, "-si", 2, "Inserting \'%s\' at %s"},
+		{nmcmdstrcasecamel, "-cc", 0, "Camelcasing"},
+		{nmcmdstrcaselower, "-cl", 0, "Lowercasing"},
+		{nmcmdstrcaseupper, "-cu", 0, "Upppercasing"},
+		{nmcmdfielddelete, "-fd", 2, "Deleting field %s delimited by \'%s\'"},
+		{nmcmdfieldswitch, "-fs", 3, "Switching field %s with %s delimited by \'%s\'"},
+		{nmcmderror, NULL, -1 ,NULL}
+	};
+	struct nmopts *option;
+	char **pathlist=NULL;
+	int pathno=0;
 	
-	//parse arguments one by one
-	while(arg<argc) {
-		//First parse for commands
-		//---
-		//print help
-		if(strcmp("-h", argv[arg]) == 0) {
-			nm_help();
-		}
-		//activate force mode
-		else if(strcmp("-f", argv[arg]) == 0) {
-			force=1;
-		}
-		//clear pathlist
-		else if(strcmp("-c", argv[arg]) == 0) {
-			nm_msg("");
+	while((option=nmopt(argv, argc, options, &argindex)) != NULL) {
+		switch(option->id) {
+			//switches
+			case nmcmdforce: force=1; break;
+			case nmcmdhelp: nm_help(); break;
 			
-			//free the memory off each path string and then the pathlist itself
-			for(; pathno>0; pathno--)
-				free(pathlist[pathno-1]);
-			free(pathlist);
+			//Group rename functions
+			case nmcmddelete:
+			case nmcmdfielddelete:
+			case nmcmdfieldswitch:
+			case nmcmdstrcasecamel:
+			case nmcmdstrcaselower:
+			case nmcmdstrcaseupper:
+			case nmcmdstrdelete:
+			case nmcmdstrinsert:
+			case nmcmdstrreplace:
+				//check if enough arguments left
+				if(argc-option->argcount<1)
+					nm_error("%d. argument \'%s\' has not enough arguments!", argindex, argv[argindex]);
+				
+				//I know this looks stupid. But it's needed.
+				//If e.g. "-sd bla" is the last command there is no argv[argindex+2] and nmrename would segfault.
+				switch(option->argcount) {
+					case 0: nmrename(pathlist, pathno, option->id, option->text, NULL, NULL, NULL); break;
+					case 1: nmrename(pathlist, pathno, option->id, option->text, argv[argindex+1], NULL, NULL); argindex++; break;
+					case 2: nmrename(pathlist, pathno, option->id, option->text, argv[argindex+1], argv[argindex+2], NULL); argindex+=2; break;
+					case 3: nmrename(pathlist, pathno, option->id, option->text, argv[argindex+1], argv[argindex+2], argv[argindex+3]); argindex+=3; break;
+				}
+				break;
 			
-			//reset start parameters
-			pathno=0;
-			pathlist=NULL;
-			
-			nm_msg("\033[1mCleared pathlist.\033[m");
-			nm_msg("");
+			//So no switch and no rename func?
+			default:
+				//Is it a path? if, so add it to pathlist
+				if(is_path(argv[argindex])==1) {
+					nm_msg("Adding \'%s\' to filelist.", argv[argindex]);
+					pathlist=(char **) realloc(pathlist, sizeof(char *) * (pathno+1));
+					pathlist[pathno++]=argv[argindex];
+				}
+				//so it's neither a path nor command. exit please!
+				else
+					nm_error("%d. argument \'%s\' is neither a file nor a command!", argindex, argv[argindex]);
 		}
-		//remove from pos1 to pos2
-		else if(strcmp("-d", argv[arg]) == 0) {
-			//enough arguments left?
-			if(argc-2-arg<1)
-				nm_error("Too less arguments left for delete cmd.");
-			
-			pathlist=nm_delete(pathlist, pathno, argv[arg+1], argv[arg+2]);
-			arg+=2;
-		}
-		//replace str1 with str2
-		else if(strcmp("-sr", argv[arg]) == 0) {
-			//enough arguments left?
-			if(argc-2-arg<1)
-				nm_error("Too less arguments left for string replace cmd.");
-			
-			pathlist=nm_replace_str(pathlist, pathno, argv[arg+1], argv[arg+2]);
-			arg+=2;
-		}
-		//delete str
-		else if(strcmp("-sd", argv[arg]) == 0) {
-			//enough arguments left?
-			if(argc-1-arg<1)
-				nm_error("Too less arguments left for string replace cmd.");
-			
-			pathlist=nm_delete_str(pathlist, pathno, argv[arg+1]);
-			arg++;
-		}
-		//insert str at pos
-		else if(strcmp("-si", argv[arg]) == 0) {
-			//enough arguments left?
-			if(argc-2-arg<1)
-				nm_error("Too less arguments left for string insert cmd.");
-			
-			pathlist=nm_insert_str(pathlist, pathno, argv[arg+1], argv[arg+2]);
-			arg+=2;
-		}
-		//camelcase
-		else if(strcmp("-cc", argv[arg]) == 0) {
-			pathlist=nm_camel_case_str(pathlist, pathno);
-		}
-		//uppercase
-		else if(strcmp("-cu", argv[arg]) == 0) {
-			pathlist=nm_upper_case_str(pathlist, pathno);
-		}
-		//lowercase
-		else if(strcmp("-cl", argv[arg]) == 0) {
-			pathlist=nm_lower_case_str(pathlist, pathno);
-		}
-		//delete field
-		else if(strcmp("-fd", argv[arg]) == 0) {
-			//enough arguments left?
-			if(argc-2-arg<1)
-				nm_error("Too less arguments left for delete field cmd.");
-			
-			pathlist=nm_delete_field(pathlist, pathno, argv[arg+1], argv[arg+2]);
-			arg+=2;
-		}
-		//switch fields
-		else if(strcmp("-fs", argv[arg]) == 0) {
-			//enough arguments left?
-			if(argc-3-arg<1)
-				nm_error("Too less arguments left for switch field cmd.");
-			
-			pathlist=nm_switch_field(pathlist, pathno, argv[arg+1], argv[arg+2], argv[arg+3]);
-			arg+=3;
-		}
-		
-		//so it's not a command, probably a file?
-		else if(is_path(argv[arg])==1) {
-			nm_msg("Adding \'%s\' to filelist.", argv[arg]);
-			pathlist=(char **) realloc(pathlist, sizeof(char *) * (pathno+1));
-			pathlist[pathno++]=argv[arg];
-		}
-		
-		//so it's neither file nor command
-		else
-			nm_error("%d. argument \'%s\' is neither a file nor a command!", arg, argv[arg]);
-		
-		//next arg
-		arg++;
 	}
 	
-	//good bye!
-	return 0;
+	//Good bye!
+	return(0);
 }

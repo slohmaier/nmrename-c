@@ -4,5 +4,5 @@ CFLAGS = -Wall
 include_HEADERS = funcs.h
 
 bin_PROGRAMS = nmrename
-nmrename_SOURCES = nmrename.c str.c funcs.c msg.c cmd.c
+nmrename_SOURCES = nmrename.c str.c funcs.c msg.c cmd.c nmopt.c
 

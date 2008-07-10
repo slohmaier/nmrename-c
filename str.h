@@ -20,11 +20,12 @@
  * Boston, MA  02110-1301  USA
  */
 
-char *nm_str_replace(char* path, char* str1, char* str2);
-char *nm_str_delete(char* str, char* cpos1, char* cpos2);
-char *nm_str_insert(char* path, char* str, char* cpos);
-char *nm_str_case_camel(char* str);
-char *nm_str_case_lower(char *str);
-char *nm_str_case_upper(char *str);
-char *nm_str_delete_field(char *str, char *cnum, char *dels);
+char *nm_str_replace(char* path, char* str1, char* str2, char *null1);
+char *nm_str_delete(char* str, char* cpos1, char* cpos2, char *null1);
+char *nm_str_insert(char* path, char* str, char* cpos, char *null1);
+char *nm_str_case_camel(char *str, char *null1, char *null2, char *null3);
+char *nm_str_case_lower(char *str, char *null1, char *null2, char *null3);
+char *nm_str_case_upper(char *str, char *null1, char *null2, char *null3);
+char *nm_str_delete_field(char *str, char *cnum, char *dels, char *null1);
 char *nm_str_switch_field(char *str, char *f1, char *f2, char *dels);
+char *nm_str_delete_str(char *path, char *str, char *null1, char *null2);

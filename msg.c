@@ -25,12 +25,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
-
-//Patterns for the messages
-#define VERSION "0.1"
-#define MSG ">> "
-#define MSG_WARNING "\033[33mW> \033[m"
-#define MSG_ERROR "\033[31mE> \033[m"
+#include "msg.h"
 
 //print a normal message
 void nm_msg(const char *format, ...) {
