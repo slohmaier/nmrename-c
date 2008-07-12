@@ -61,9 +61,11 @@ int main(int argc, char **argv) {
 	//Let's first check if everything is ok
 	while((option=nmopt(argv, argc, options, &argindex)) != NULL) {
 		switch(option->id) {
+			//special treatment for help
+			case nmcmdhelp: nm_help(); return(0);
+
 			//enough arguemnts for all commands?
 			case nmcmdforce:
-			case nmcmdhelp:
 			case nmcmddelete:
 			case nmcmdfielddelete:
 			case nmcmdfieldswitch:
@@ -75,7 +77,7 @@ int main(int argc, char **argv) {
 			case nmcmdstrreplace:
 				//check if enough arguments left
 				if(argc-argindex-option->argcount<1) {
-					nm_error(0, "%d. argument \'%s\' has not enough arguments!\n", argindex, argv[argindex]);
+					nm_error(0, "%d. argument \'%s\' has not enough arguments!", argindex, argv[argindex]);
 					error=1;
 				}
 				argindex+=option->argcount;
@@ -85,7 +87,7 @@ int main(int argc, char **argv) {
 			default:
 				//Is it a path?
 				if(is_path(argv[argindex])!=1) {
-					nm_error(0, "%d. argument \'%s\' is neither a file nor a command!\n", argindex, argv[argindex]);
+					nm_error(0, "%d. argument \'%s\' is neither a file nor a command!", argindex, argv[argindex]);
 					error=1;
 				}
 		}
@@ -99,7 +101,6 @@ int main(int argc, char **argv) {
 		switch(option->id) {
 			//switches
 			case nmcmdforce: force=1; break;
-			case nmcmdhelp: nm_help(); break;
 			
 			//Group rename functions
 			case nmcmddelete:
@@ -111,14 +112,8 @@ int main(int argc, char **argv) {
 			case nmcmdstrdelete:
 			case nmcmdstrinsert:
 			case nmcmdstrreplace:
-				//I know this looks stupid. But it's needed.
-				//If e.g. "-sd bla" is the last command there is no argv[argindex+2] and nmrename would segfault.
-				switch(option->argcount) {
-					case 0: nmrename(pathlist, pathno, option->id, option->text, NULL, NULL, NULL); break;
-					case 1: nmrename(pathlist, pathno, option->id, option->text, argv[argindex+1], NULL, NULL); argindex++; break;
-					case 2: nmrename(pathlist, pathno, option->id, option->text, argv[argindex+1], argv[argindex+2], NULL); argindex+=2; break;
-					case 3: nmrename(pathlist, pathno, option->id, option->text, argv[argindex+1], argv[argindex+2], argv[argindex+3]); argindex+=3; break;
-				}
+				nmrename(pathlist, pathno, option->id, option->text, argv[argindex+1], argv[argindex+2], argv[argindex+3]);
+				argindex+=option->argcount;
 				break;
 			
 			//Add the files
