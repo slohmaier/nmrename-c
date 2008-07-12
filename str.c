@@ -321,29 +321,23 @@ char *nm_str_switch_field(char *str, char *f1, char *f2, char *dels) {
 	//get memory for result
 	result=(char *) malloc(sizeof(char) * size);
 	
-	printf("f1: %d|%d  f2: %d|%d  size:%d\n\n", field1->start, field1->end, field2->start, field2->end, size);
-	
 	//assign result
-	for(i=0, j=0; i<=size; i++, j++) {
+	for(i=0, j=0; i<=size; i++, j++)
 		if(i==field1->start) {
-			for(k=field2->start, i=field1->end; k<=field2->end; k++, j++) {
+			for(k=field2->start, i=field1->end; k<=field2->end; k++, j++)
 				result[j]=str[k];
-				printf("i:%d j:%d k:%d char:%c\n", i, j, k, str[k]);
-			}
+			
 			j--; //j gets increased by the for loop, but j should remain the same
 		}
 		else if(i==field2->start) {
-			for(k=field1->start, i=field2->end; k<=field1->end; k++, j++) {
+			for(k=field1->start, i=field2->end; k<=field1->end; k++, j++)
 				result[j]=str[k];
-				printf("i:%d j:%d k:%d char:%c\n", i, j, k, str[k]);
-			}
+			
 			j--; //j gets increased by the for loop, but j should remain the same
 		}
-		else {
+		else
 			result[j]=str[i];
-			printf("i:%d j:%d k:  char:%c\n", i, j, str[i]);
-		}
-	}
+	
 	result[j]=str[i];
 	
 	return result;
