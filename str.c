@@ -1,3 +1,4 @@
+
 /*
  * str.c
  * This file is part of nmrename

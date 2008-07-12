@@ -56,7 +56,47 @@ int main(int argc, char **argv) {
 	struct nmopts *option;
 	char **pathlist=NULL;
 	int pathno=0;
+	int error=0;
+
+	//Let's first check if everything is ok
+	while((option=nmopt(argv, argc, options, &argindex)) != NULL) {
+		switch(option->id) {
+			//enough arguemnts for all commands?
+			case nmcmdforce:
+			case nmcmdhelp:
+			case nmcmddelete:
+			case nmcmdfielddelete:
+			case nmcmdfieldswitch:
+			case nmcmdstrcasecamel:
+			case nmcmdstrcaselower:
+			case nmcmdstrcaseupper:
+			case nmcmdstrdelete:
+			case nmcmdstrinsert:
+			case nmcmdstrreplace:
+				//check if enough arguments left
+				if(argc-argindex-option->argcount<1) {
+					printf(MSG_ERROR);
+					printf("%d. argument \'%s\' has not enough arguments!\n", argindex, argv[argindex]);
+					error=1;
+				}
+				argindex+=option->argcount;
+				break;
+			
+			//It's no command? Is it a file?
+			default:
+				//Is it a path?
+				if(is_path(argv[argindex])!=1) {
+					printf(MSG_ERROR);
+					printf("%d. argument \'%s\' is neither a file nor a command!\n", argindex, argv[argindex]);
+					error=1;
+				}
+		}
+	}
+	//Error encountered? exit.
+	if(error==1) return(1);
 	
+	//Now we can execute everything
+	argindex=0;
 	while((option=nmopt(argv, argc, options, &argindex)) != NULL) {
 		switch(option->id) {
 			//switches
@@ -73,10 +113,6 @@ int main(int argc, char **argv) {
 			case nmcmdstrdelete:
 			case nmcmdstrinsert:
 			case nmcmdstrreplace:
-				//check if enough arguments left
-				if(argc-option->argcount<1)
-					nm_error("%d. argument \'%s\' has not enough arguments!", argindex, argv[argindex]);
-				
 				//I know this looks stupid. But it's needed.
 				//If e.g. "-sd bla" is the last command there is no argv[argindex+2] and nmrename would segfault.
 				switch(option->argcount) {
@@ -87,17 +123,12 @@ int main(int argc, char **argv) {
 				}
 				break;
 			
-			//So no switch and no rename func?
+			//Add the files
 			default:
-				//Is it a path? if, so add it to pathlist
-				if(is_path(argv[argindex])==1) {
-					nm_msg("Adding \'%s\' to filelist.", argv[argindex]);
-					pathlist=(char **) realloc(pathlist, sizeof(char *) * (pathno+1));
-					pathlist[pathno++]=argv[argindex];
-				}
-				//so it's neither a path nor command. exit please!
-				else
-					nm_error("%d. argument \'%s\' is neither a file nor a command!", argindex, argv[argindex]);
+				nm_msg("Adding \'%s\' to filelist.", argv[argindex]);
+				pathlist=(char **) realloc(pathlist, sizeof(char *) * (pathno+1));
+				pathlist[pathno++]=argv[argindex];
+				break;
 		}
 	}
 	

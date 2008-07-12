@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-CFLAGS = -Wall
+CFLAGS = -Wall -g3
 include_HEADERS = funcs.h
 
 bin_PROGRAMS = nmrename
