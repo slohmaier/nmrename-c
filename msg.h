@@ -20,13 +20,7 @@
  * Boston, MA  02110-1301  USA
  */
 
-//Patterns for the messages
-#define VERSION "0.1"
-#define MSG ">> "
-#define MSG_WARNING "\033[33mW> \033[m"
-#define MSG_ERROR "\033[31mE> \033[m"
-
 void nm_msg(const char *format, ...);
 void nm_warn(const char *format, ...);
-void nm_error(const char *format, ...);
+void nm_error(int code, const char *format, ...);
 void nm_help(void);

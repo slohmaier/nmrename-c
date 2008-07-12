@@ -42,9 +42,9 @@ char *nm_str_delete(char* str, char* cpos1, char* cpos2, char *null1) {
 	
 	//convert the positions from strings into real numbers, exit on error.
 	if((pos1=nm_convert_pos(str, cpos1))==-1)
-		nm_error("\'%s\' is not a valid position.", cpos1);
+		nm_error(1, "\'%s\' is not a valid position.", cpos1);
 	if((pos2=nm_convert_pos(str, cpos2))==-1)
-		nm_error("\'%s\' is not a valid position.", cpos2);
+		nm_error(1, "\'%s\' is not a valid position.", cpos2);
 	
 	//switch positions if 2nd position is smaller than first
 	if(pos1>pos2) {

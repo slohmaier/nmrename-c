@@ -75,8 +75,7 @@ int main(int argc, char **argv) {
 			case nmcmdstrreplace:
 				//check if enough arguments left
 				if(argc-argindex-option->argcount<1) {
-					printf(MSG_ERROR);
-					printf("%d. argument \'%s\' has not enough arguments!\n", argindex, argv[argindex]);
+					nm_error(0, "%d. argument \'%s\' has not enough arguments!\n", argindex, argv[argindex]);
 					error=1;
 				}
 				argindex+=option->argcount;
@@ -86,8 +85,7 @@ int main(int argc, char **argv) {
 			default:
 				//Is it a path?
 				if(is_path(argv[argindex])!=1) {
-					printf(MSG_ERROR);
-					printf("%d. argument \'%s\' is neither a file nor a command!\n", argindex, argv[argindex]);
+					nm_error(0, "%d. argument \'%s\' is neither a file nor a command!\n", argindex, argv[argindex]);
 					error=1;
 				}
 		}

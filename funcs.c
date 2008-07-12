@@ -120,7 +120,7 @@ struct nmfield *nm_convert_field(char *str, char *cfield, char *dels) {
 	
 	//convert string field position to numerical one
 	field=strtol(cfield, &p, 10);
-	if(*p!='\0') nm_error("'%s' is not a valid field number.");
+	if(*p!='\0') nm_error(1, "'%s' is not a valid field number.");
 	
 	//from left
 	//---

@@ -40,7 +40,7 @@ void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1,
 	char *(*renamefunc)(char*, char*, char*, char*) = NULL;
 	
 	//check if list is empty
-	if(pathlist==NULL) nm_error("Pathlist is empty! Nothing to rename!");
+	if(pathlist==NULL) nm_error(1, "Pathlist is empty! Nothing to rename!");
 	
 	//generate new map
 	newlist = (char **) malloc(sizeof(char *) * (pathno+1));
@@ -57,7 +57,7 @@ void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1,
 		case nmcmdstrinsert:    renamefunc=nm_str_insert; break;
 		case nmcmdstrreplace:   renamefunc=nm_str_replace; break;
 		default:
-			nm_error("MAJOR PROGRAM FAULT in nmrename()!!! CONTACT DEVELOPER!");
+			nm_error(1, "MAJOR PROGRAM FAULT in nmrename()!!! CONTACT DEVELOPER!");
 			break;
 	}
 	
@@ -112,7 +112,7 @@ void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1,
 	for(i=0; i<pathno; i++)
 		for(j=0; j<pathno; j++) {
 			if(j!=i && strcmp(newlist[i], newlist[j])==0)
-				nm_error("More than one path would be renamed to '%s'", newlist[i]);
+				nm_error(1, "More than one path would be renamed to '%s'", newlist[i]);
 		}
 	
 	//rename everything

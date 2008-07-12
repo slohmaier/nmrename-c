@@ -27,6 +27,12 @@
 #include <stdlib.h>
 #include "msg.h"
 
+//Patterns for the messages
+#define VERSION "0.1"
+#define MSG ">> "
+#define MSG_WARNING "\033[33mW> \033[m"
+#define MSG_ERROR "\033[31mE> \033[m"
+
 //print a normal message
 void nm_msg(const char *format, ...) {
 	va_list list;
@@ -46,13 +52,14 @@ void nm_warn(const char *format, ...) {
 }
 
 //print a normal message
-void nm_error(const char *format, ...) {
+void nm_error(int code, const char *format, ...) {
 	va_list list;
 	va_start(list, format);
 	printf(MSG_ERROR);
 	vprintf(format, list);
 	printf("Try nmrename -h.\n");
-	exit(1);
+	if(code != 0)
+		exit(code);
 }
 
 //print help
