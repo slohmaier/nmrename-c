@@ -57,7 +57,7 @@ void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1,
 		case nmcmdstrinsert:    renamefunc=nm_str_insert; break;
 		case nmcmdstrreplace:   renamefunc=nm_str_replace; break;
 		default:
-			nm_error(1, "MAJOR PROGRAM FAULT in nmrename()!!! CONTACT DEVELOPER!");
+			nm_error(1, "Well. This shouldn't happen.");
 			break;
 	}
 	
