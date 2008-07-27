@@ -32,6 +32,7 @@ enum enumnmcmd {
 	nmcmdstrcaselower,
 	nmcmdfielddelete,
 	nmcmdfieldswitch,
+	nmcmdlist,
 	nmcmdforce
 };
 typedef enum enumnmcmd nmcmd;

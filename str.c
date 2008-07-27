@@ -346,3 +346,42 @@ char *nm_str_switch_field(char *str, char *f1, char *f2, char *dels) {
 char *nm_str_delete_str(char *path, char *str, char *null1, char *null2) {
 	return(nm_str_replace(path, str, "", NULL));
 }
+
+char *nm_str_list(char *path, char *list, char *null1, char *null2) {
+	static FILE *file=NULL;
+	static char oldff[256];
+	static char oldffr[256];
+	static int i=0;
+	int j=0;
+	char c;
+	char *result;
+	
+	//New run if the old first file is detected. Old first file can be renamed or not.
+	if(strcmp(oldff, path)==0 || strcmp(oldffr, path)==0) {
+		i=0;
+		fclose(file);
+		file=NULL;
+		oldff[0]='\0';
+	}
+	
+	//At the start? open the file
+	if(file==NULL)
+		if((file=fopen(list, "r"))==NULL)
+			nm_error(1, "Couldn't open the listfile \'%s\'.", list);
+	
+	//get the path
+	result=(char *) malloc(sizeof(char) * strlen(oldff));
+	for(j=0; (c=fgetc(file))!='\n' && c!=EOF && j<256; j++)
+		result[j]=c;
+	
+	//If nothing is read from the listfile there is not enough in there
+	if(j==0 && c==EOF)
+		nm_error(1, "Not enough paths in listfile \'%s\'.", list);
+	
+	//At start? Set old first file and old renamed firstfile to detect new renameruns.
+	if(i==0) for(j=0; j<256 && result[j]!='\0'; j++) oldffr[j]=result[j];
+	if(i==0) for(j=0; j<256 && path[j]!='\0'; j++) oldff[j]=path[j];
+	
+	i++;
+	return result;
+}

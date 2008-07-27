@@ -56,6 +56,7 @@ void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1,
 		case nmcmdstrdelete:    renamefunc=nm_str_delete_str; break;
 		case nmcmdstrinsert:    renamefunc=nm_str_insert; break;
 		case nmcmdstrreplace:   renamefunc=nm_str_replace; break;
+		case nmcmdlist:         renamefunc=nm_str_list; break;
 		default:
 			nm_error(1, "Well. This shouldn't happen.");
 			break;

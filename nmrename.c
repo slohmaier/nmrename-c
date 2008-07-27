@@ -51,6 +51,7 @@ int main(int argc, char **argv) {
 		{nmcmdstrcaseupper, "-cu", 0, "Upppercasing"},
 		{nmcmdfielddelete, "-fd", 2, "Deleting field %s delimited by \'%s\'"},
 		{nmcmdfieldswitch, "-fs", 3, "Switching field %s with %s delimited by \'%s\'"},
+		{nmcmdlist, "-l", 1, "Getting new pathnames from listfile \'%s\'"},
 		{nmcmderror, NULL, -1 ,NULL}
 	};
 	struct nmopts *option;
@@ -75,6 +76,7 @@ int main(int argc, char **argv) {
 			case nmcmdstrdelete:
 			case nmcmdstrinsert:
 			case nmcmdstrreplace:
+			case nmcmdlist:
 				//check if enough arguments left
 				if(argc-argindex-option->argcount<1) {
 					nm_error(0, "%d. argument \'%s\' has not enough arguments!", argindex, argv[argindex]);
@@ -112,6 +114,7 @@ int main(int argc, char **argv) {
 			case nmcmdstrdelete:
 			case nmcmdstrinsert:
 			case nmcmdstrreplace:
+			case nmcmdlist:
 				nmrename(pathlist, pathno, option->id, option->text, argv[argindex+1], argv[argindex+2], argv[argindex+3]);
 				argindex+=option->argcount;
 				break;
