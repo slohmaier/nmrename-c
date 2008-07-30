@@ -343,10 +343,14 @@ char *nm_str_switch_field(char *str, char *f1, char *f2, char *dels) {
 	return result;
 }
 
+//This function just uses str_replace
 char *nm_str_delete_str(char *path, char *str, char *null1, char *null2) {
 	return(nm_str_replace(path, str, "", NULL));
 }
 
+//This function gets the paths from the file 'list'
+//It just tries to load new paths from the file on call
+//A new run is detected by checking if we're at the first file again
 char *nm_str_list(char *path, char *list, char *null1, char *null2) {
 	static FILE *file=NULL;
 	static char oldff[256];
