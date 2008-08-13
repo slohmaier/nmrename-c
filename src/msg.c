@@ -94,6 +94,9 @@ void nm_help(void) {
 		"  -fs [POS1] [POS2] [S] : Switches field POS1 with field POS2.\n"
 		"                          Fielddelimiters are in S.\n"
 		"\n"
+		"  -l [FILENAME] : Loads new pathnames from [FILENAME] (List MUST have\n"
+		"                  EXACTLY as many paths as paths in the pathlist!)\n"
+		"\n"
 		"  [POS*] can be 0,1,2,... or -0,-1,-2,... ('-' starts counting from the right).\n"
 		"  [S*] is a string of your choice.\n"
 		"\n", VERSION
