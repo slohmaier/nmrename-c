@@ -39,9 +39,11 @@ unsigned short force=0; //force renaming? no questions asked
 int main(int argc, char **argv) {
 	//vars
 	int argindex=0;
+	int i;
 	static struct nmopts options[] = {
 		{nmcmdhelp, "-h", 0, NULL},
 		{nmcmdforce, "-f", 0, NULL},
+		{nmcmdclear, "-c", 0, NULL},
 		{nmcmddelete, "-d", 2, "Deleting from %s to %s:"},
 		{nmcmdstrdelete, "-sd", 1, "Deleting \'%s\'"},
 		{nmcmdstrreplace, "-sr", 2, "Replacing \'%s\' with \'%s\'"},
@@ -67,6 +69,7 @@ int main(int argc, char **argv) {
 
 			//enough arguemnts for all commands?
 			case nmcmdforce:
+			case nmcmdclear:
 			case nmcmddelete:
 			case nmcmdfielddelete:
 			case nmcmdfieldswitch:
@@ -103,6 +106,16 @@ int main(int argc, char **argv) {
 		switch(option->id) {
 			//switches
 			case nmcmdforce: force=1; break;
+			
+			//clear pathlist. free the memory
+			case nmcmdclear:
+				//perhaps freeing stuff not in argv might be a good idea
+				free(pathlist);
+				pathno = 0;
+				nm_msg("");
+				nm_msg("Cleared pathlist.");
+				nm_msg("");
+				break;
 			
 			//Group rename functions
 			case nmcmddelete:

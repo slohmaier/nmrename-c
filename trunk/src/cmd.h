@@ -22,6 +22,7 @@
 
 enum enumnmcmd {
 	nmcmderror=0,
+	nmcmdclear,
 	nmcmdhelp,
 	nmcmddelete,
 	nmcmdstrreplace,
