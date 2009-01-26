@@ -2,7 +2,7 @@
  * msg.c
  * This file is part of nmrename
  *
- * Copyright (C) 2007 - Stefan Lohmaier
+ * Copyright (C) 2007-2009 Stefan Lohmaier
  *
  * nmrename is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ void nm_help(void) {
 	printf(
 		"\n"
 		"nmrename %s - A mass renaming tool.\n"
-		"Copyright 2007 by Stefan Lohmaier <noneuss at gmail dot com>\n"
+		"Copyright 2007-2009 by Stefan Lohmaier\n"
 		"\n"
 		"Usage:\n"
 		"    nmrename [PATHLIST] [COMMANDS]\n"

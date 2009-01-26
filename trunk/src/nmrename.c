@@ -2,7 +2,7 @@
  * main.c
  * This file is part of nmrename
  *
- * Copyright (C) 2007 - Stefan Lohmaier
+ * Copyright (C) 2007-2009 Stefan Lohmaier
  *
  * nmrename is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,9 +37,14 @@ unsigned short force=0; //force renaming? no questions asked
 //main-Program
 //---
 int main(int argc, char **argv) {
+	//just print a text if no arguments present
+	if(argc<2) {
+		printf("I need arguments! Try %s -h.\n", argv[0]);
+		return(0);
+	}
+	
 	//vars
 	int argindex=0;
-	int i;
 	static struct nmopts options[] = {
 		{nmcmdhelp, "-h", 0, NULL},
 		{nmcmdforce, "-f", 0, NULL},
@@ -96,6 +101,8 @@ int main(int argc, char **argv) {
 					error=1;
 				}
 		}
+		
+		free(option);
 	}
 	//Error encountered? exit.
 	if(error==1) return(1);
@@ -139,6 +146,8 @@ int main(int argc, char **argv) {
 				pathlist[pathno++]=argv[argindex];
 				break;
 		}
+		
+		free(option);
 	}
 	
 	//Good bye!
