@@ -15,9 +15,9 @@ OBJECTS=$(subst .c,.o,$(wildcard src/*.c))
 
 all: $(PROGRAM)
 
-install:
-	mkdir -p $(DESTDIR)/bin
-	install -m755 build/$(PROGRAM) $(DESTDIR)/bin/$(PROGRAM)
+install: all
+	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	install -m755 build/$(PROGRAM) $(DESTDIR)$(PREFIX)/bin/$(PROGRAM)
 
 clean:
 	rm -rf build
