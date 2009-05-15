@@ -22,6 +22,9 @@
 
 enum enumnmcmd {
 	nmcmderror=0,
+	#ifdef WITH_EXIF
+	nmcmdexif,
+	#endif
 	nmcmdclear,
 	nmcmdhelp,
 	nmcmddelete,

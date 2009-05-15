@@ -59,6 +59,9 @@ int main(int argc, char **argv) {
 		{nmcmdfielddelete, "-fd", 2, "Deleting field %s delimited by \'%s\'"},
 		{nmcmdfieldswitch, "-fs", 3, "Switching field %s with %s delimited by \'%s\'"},
 		{nmcmdlist, "-l", 1, "Getting new pathnames from listfile \'%s\'"},
+		#ifdef WITH_EXIF
+		{nmcmdexif, "-exif", 1, "Replacing pathnames with exif data from pattern \'%s\':"},
+		#endif
 		{nmcmderror, NULL, -1 ,NULL}
 	};
 	struct nmopts *option;
@@ -85,6 +88,9 @@ int main(int argc, char **argv) {
 			case nmcmdstrinsert:
 			case nmcmdstrreplace:
 			case nmcmdlist:
+			#ifdef WITH_EXIF
+			case nmcmdexif:
+			#endif
 				//check if enough arguments left
 				if(argc-argindex-option->argcount<1) {
 					nm_error(0, "%d. argument \'%s\' has not enough arguments!", argindex, argv[argindex]);
@@ -102,7 +108,7 @@ int main(int argc, char **argv) {
 				}
 		}
 		
-		free(option);
+		//free(option);
 	}
 	//Error encountered? exit.
 	if(error==1) return(1);
@@ -135,6 +141,9 @@ int main(int argc, char **argv) {
 			case nmcmdstrinsert:
 			case nmcmdstrreplace:
 			case nmcmdlist:
+			#ifdef WITH_EXIF
+			case nmcmdexif:
+			#endif
 				nmrename(pathlist, pathno, option->id, option->text, argv[argindex+1], argv[argindex+2], argv[argindex+3]);
 				argindex+=option->argcount;
 				break;
@@ -147,7 +156,7 @@ int main(int argc, char **argv) {
 				break;
 		}
 		
-		free(option);
+		//free(option);
 	}
 	
 	//Good bye!

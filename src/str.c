@@ -26,6 +26,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef WITH_EXIF
+#include <libexif/exif-data.h>
+#endif
+
 #include "msg.h"
 #include "funcs.h"
 
@@ -389,3 +394,94 @@ char *nm_str_list(char *path, char *list, char *null1, char *null2) {
 	i++;
 	return result;
 }
+
+#ifdef WITH_EXIF
+char *get_tag(ExifData *data, ExifIfd ifd, ExifTag tag) {
+	ExifEntry *entry = exif_content_get_entry(data->ifd[ifd], tag);
+	
+	if(entry) {
+		char *buf = (char *) malloc(sizeof(char) * 1024);
+		exif_entry_get_value(entry, buf, 1024);
+		return buf;
+	}
+	else
+		return NULL;
+}
+
+char *nm_str_exif(char *path, char *pattern, char *null1, char *null2) {
+	ExifData *data;
+	char *result, *buf;
+	char *year, *month, *day, *hour, *min, *sec;
+	char *origfilename;
+	int len;
+	
+	//read data from file. if failed return original string
+	data = exif_data_new_from_file(path);
+	if(!data) return(NULL);
+	
+	//get memory
+	year = (char *) malloc(sizeof(char) * 5);
+	month = (char *) malloc(sizeof(char) * 3);
+	day = (char *) malloc(sizeof(char) * 3);
+	hour = (char *) malloc(sizeof(char) * 3);
+	min = (char *) malloc(sizeof(char) * 3);
+	sec = (char *) malloc(sizeof(char) * 3);
+	
+	//get date information
+	buf = get_tag(data, EXIF_IFD_EXIF, EXIF_TAG_DATE_TIME_ORIGINAL);
+	strncpy(year, buf, 4);
+	year[4] = '\0';
+	strncpy(month, buf + 5*sizeof(char), 2);
+	month[2] = '\0';
+	strncpy(day, buf + 8*sizeof(char), 2);
+	day[2] = '\0';
+	strncpy(hour, buf + 11*sizeof(char), 2);
+	hour[2] = '\0';
+	strncpy(min, buf + 14*sizeof(char), 2);
+	min[2] = '\0';
+	strncpy(sec, buf + 17*sizeof(char), 2);
+	sec[2] = '\0';
+	
+	//get original filename
+	len = strrchr(path, '.') - path;
+	origfilename = (char *) malloc(len);
+	strncpy(origfilename, path, len / sizeof(char));
+	origfilename[len/sizeof(char)] = '\0';
+	nm_msg("origfilename:%s", origfilename);
+	
+	//now replace everything
+	buf = nm_str_replace(pattern, "%o", origfilename, NULL);
+	result = buf;
+	buf = nm_str_replace(result, "%Y", year, NULL);
+	free(result);
+	result = buf;
+	buf = nm_str_replace(result, "%M", month, NULL);
+	free(result);
+	result = buf;
+	buf = nm_str_replace(result, "%D", day, NULL);
+	free(result);
+	result = buf;
+	buf = nm_str_replace(result, "%h", hour, NULL);
+	free(result);
+	result = buf;
+	buf = nm_str_replace(result, "%m", min, NULL);
+	free(result);
+	result = buf;
+	buf = nm_str_replace(result, "%s", sec, NULL);
+	free(result);
+	result = buf;
+	
+	nm_msg("new filename: %s", result);
+	
+	//free all vars
+	free(year);
+	free(month);
+	free(day);
+	free(hour);
+	free(min);
+	free(sec);
+	free(origfilename);
+	
+	return(result);
+}
+#endif
