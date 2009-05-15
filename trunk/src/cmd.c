@@ -36,6 +36,7 @@ void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1,
 	char **newlist;
 	int i, j;
 	char answer;
+	char *slash, *buf;
 	//the function pointer
 	char *(*renamefunc)(char*, char*, char*, char*) = NULL;
 	
@@ -72,8 +73,17 @@ void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1,
 	
 	//create new list
 	for(i=0; i<pathno; i++) {
-		//rename the path
-		newlist[i]=renamefunc(pathlist[i], arg1, arg2, arg3);
+		if((slash = strrchr(pathlist[i], '/')) == NULL) {
+			newlist[i]=renamefunc(pathlist[i], arg1, arg2, arg3);
+		}
+		//we only want to rename the file. Not it's parent paths
+		else {
+			buf = renamefunc(slash + sizeof(char), arg1, arg2, arg3);
+			newlist[i] = (char *) malloc(sizeof(char) * (strlen(buf) + 1 + (slash - pathlist[i])/sizeof(char)) );
+			strncpy(newlist[i], pathlist[i], (slash - pathlist[i])/sizeof(char));
+			strcat(newlist[i], "/");
+			strcat(newlist[i], buf);
+		}
 		
 		//if renaming failed omitt and just copy
 		if(newlist[i]==NULL || strcmp(newlist[i], "") == 0) {
