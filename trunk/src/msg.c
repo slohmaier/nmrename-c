@@ -96,6 +96,11 @@ void nm_help(void) {
 		"\n"
 		"  -l [FILENAME] : Loads new pathnames from [FILENAME] (List MUST have\n"
 		"                  EXACTLY as many paths as paths in the pathlist!)\n"
+		#ifdef WITH_EXIF
+		"\n"
+		"  -exif [PATTERN] : New Pathnames will be replaced by PATTERN.\n"
+		"        [PATTERN] can have the following keywords:\n"
+		#endif
 		"\n"
 		"  [POS*] can be 0,1,2,... or -0,-1,-2,... ('-' starts counting from the right).\n"
 		"  [S*] is a string of your choice.\n"

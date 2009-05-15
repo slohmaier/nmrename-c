@@ -30,3 +30,6 @@ char *nm_str_delete_field(char *str, char *cnum, char *dels, char *null1);
 char *nm_str_switch_field(char *str, char *f1, char *f2, char *dels);
 char *nm_str_delete_str(char *path, char *str, char *null1, char *null2);
 char *nm_str_list(char *path, char *list, char *null1, char *null2);
+#ifdef WITH_EXIF
+char *nm_str_exif(char *path, char *pattern, char *null1, char *null2);
+#endif
