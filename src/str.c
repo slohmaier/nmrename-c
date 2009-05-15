@@ -447,7 +447,6 @@ char *nm_str_exif(char *path, char *pattern, char *null1, char *null2) {
 	origfilename = (char *) malloc(len);
 	strncpy(origfilename, path, len / sizeof(char));
 	origfilename[len/sizeof(char)] = '\0';
-	nm_msg("origfilename:%s", origfilename);
 	
 	//now replace everything
 	buf = nm_str_replace(pattern, "%o", origfilename, NULL);
@@ -470,8 +469,6 @@ char *nm_str_exif(char *path, char *pattern, char *null1, char *null2) {
 	buf = nm_str_replace(result, "%s", sec, NULL);
 	free(result);
 	result = buf;
-	
-	nm_msg("new filename: %s", result);
 	
 	//free all vars
 	free(year);
