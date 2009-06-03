@@ -1,7 +1,7 @@
 #
 # Configuration
 #
-CFLAGS ?= -g -Wall
+CFLAGS ?= -g -Wall -O0
 LDFLAGS ?=
 CC ?= gcc
 PREFIX ?=/usr
