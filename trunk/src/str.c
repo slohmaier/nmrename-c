@@ -36,7 +36,7 @@
 
 //remove from pos1 to pos2 from str and return new string
 //---
-char *nm_str_delete(char* str, char* cpos1, char* cpos2, char *null1) {
+char *nm_str_delete(char* dir, char* str, char* cpos1, char* cpos2, char *null1) {
 	//vars
 	//---
 	char *result;         //the returning string
@@ -81,7 +81,7 @@ char *nm_str_delete(char* str, char* cpos1, char* cpos2, char *null1) {
 
 //replace str1 with str2 in str and return new string
 //---
-char *nm_str_replace(char* path, char* str1, char* str2, char *null1) {
+char *nm_str_replace(char* dir, char* path, char* str1, char* str2, char *null1) {
 	//vars
 	//---
 	int size;               //all the sizes
@@ -135,7 +135,7 @@ char *nm_str_replace(char* path, char* str1, char* str2, char *null1) {
 
 //insert str at cpos
 //---
-char *nm_str_insert(char* path, char* str, char* cpos, char *null1) {
+char *nm_str_insert(char* dir, char* path, char* str, char* cpos, char *null1) {
 	//vars
 	//---
 	char *result; //resulting string
@@ -177,7 +177,7 @@ char *nm_str_insert(char* path, char* str, char* cpos, char *null1) {
 
 //convert str to camlcase (aa bb cc -> Aa Bb Cc)
 //---
-char *nm_str_case_camel(char* str, char *null1, char *null2, char *null3) {
+char *nm_str_case_camel(char* dir, char* str, char *null1, char *null2, char *null3) {
 	//vars
 	//---
 	char *result;	//resulting var
@@ -220,7 +220,7 @@ char *nm_str_case_camel(char* str, char *null1, char *null2, char *null3) {
 
 //lower case everything
 //---
-char *nm_str_case_lower(char *str, char *null1, char *null2, char *null3) {
+char *nm_str_case_lower(char* dir, char *str, char *null1, char *null2, char *null3) {
 	//vars
 	//---
 	char *result;	//resulting char
@@ -242,7 +242,7 @@ char *nm_str_case_lower(char *str, char *null1, char *null2, char *null3) {
 
 //uppercase case everything
 //---
-char *nm_str_case_upper(char *str, char *null1, char *null2, char *null3) {
+char *nm_str_case_upper(char* dir, char *str, char *null1, char *null2, char *null3) {
 	//vars
 	//---
 	char *result;	//resulting char
@@ -264,7 +264,7 @@ char *nm_str_case_upper(char *str, char *null1, char *null2, char *null3) {
 
 //delete field cnum from str. fields delimiters are in dels.
 //---
-char *nm_str_delete_field(char *str, char *cnum, char *dels, char *null1) {
+char *nm_str_delete_field(char* dir, char *str, char *cnum, char *dels, char *null1) {
 	//vars
 	//---
 	char *result;	//resulting char
@@ -309,7 +309,7 @@ char *nm_str_delete_field(char *str, char *cnum, char *dels, char *null1) {
 
 //switch field f1 with field f2. fields delimiters are in dels.
 //---
-char *nm_str_switch_field(char *str, char *f1, char *f2, char *dels) {
+char *nm_str_switch_field(char* dir, char *str, char *f1, char *f2, char *dels) {
 	//vars
 	//---
 	char *result;	//resulting char;
@@ -349,14 +349,14 @@ char *nm_str_switch_field(char *str, char *f1, char *f2, char *dels) {
 }
 
 //This function just uses str_replace
-char *nm_str_delete_str(char *path, char *str, char *null1, char *null2) {
-	return(nm_str_replace(path, str, "", NULL));
+char *nm_str_delete_str(char* dir, char *path, char *str, char *null1, char *null2) {
+	return(nm_str_replace(dir, path, str, "", NULL));
 }
 
 //This function gets the paths from the file 'list'
 //It just tries to load new paths from the file on call
 //A new run is detected by checking if we're at the first file again
-char *nm_str_list(char *path, char *list, char *null1, char *null2) {
+char *nm_str_list(char* dir, char *path, char *list, char *null1, char *null2) {
 	static FILE *file=NULL;
 	static char oldff[256];
 	static char oldffr[256];
@@ -408,15 +408,25 @@ char *get_tag(ExifData *data, ExifIfd ifd, ExifTag tag) {
 		return NULL;
 }
 
-char *nm_str_exif(char *path, char *pattern, char *null1, char *null2) {
+char *nm_str_exif(char* dir, char *path, char *pattern, char *null1, char *null2) {
 	ExifData *data;
 	char *result, *buf;
 	char *year, *month, *day, *hour, *min, *sec;
 	char *origfilename;
+	char *origpath;
 	int len;
 	
-	//read data from file. if failed return original string
-	data = exif_data_new_from_file(path);
+	if(strcmp(dir, ".") != 0)  {
+		origpath = (char *) malloc((strlen(dir) + strlen(path) + 2) * sizeof(char));
+		strcpy(origpath, dir);
+		strcat(origpath, "/");
+		strcat(origpath, path);
+		data = exif_data_new_from_file(origpath);
+		free(origpath);
+	}
+	else
+		data = exif_data_new_from_file(path);
+	
 	if(!data) return(NULL);
 	
 	//get memory
@@ -449,24 +459,24 @@ char *nm_str_exif(char *path, char *pattern, char *null1, char *null2) {
 	origfilename[len/sizeof(char)] = '\0';
 	
 	//now replace everything
-	buf = nm_str_replace(pattern, "%o", origfilename, NULL);
+	buf = nm_str_replace(dir, pattern, "%o", origfilename, NULL);
 	result = buf;
-	buf = nm_str_replace(result, "%Y", year, NULL);
+	buf = nm_str_replace(dir, result, "%Y", year, NULL);
 	free(result);
 	result = buf;
-	buf = nm_str_replace(result, "%M", month, NULL);
+	buf = nm_str_replace(dir, result, "%M", month, NULL);
 	free(result);
 	result = buf;
-	buf = nm_str_replace(result, "%D", day, NULL);
+	buf = nm_str_replace(dir, result, "%D", day, NULL);
 	free(result);
 	result = buf;
-	buf = nm_str_replace(result, "%h", hour, NULL);
+	buf = nm_str_replace(dir, result, "%h", hour, NULL);
 	free(result);
 	result = buf;
-	buf = nm_str_replace(result, "%m", min, NULL);
+	buf = nm_str_replace(dir, result, "%m", min, NULL);
 	free(result);
 	result = buf;
-	buf = nm_str_replace(result, "%s", sec, NULL);
+	buf = nm_str_replace(dir, result, "%s", sec, NULL);
 	free(result);
 	result = buf;
 	
