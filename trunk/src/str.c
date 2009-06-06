@@ -411,10 +411,13 @@ char *get_tag(ExifData *data, ExifIfd ifd, ExifTag tag) {
 char *nm_str_exif(char* dir, char *path, char *pattern, char *null1, char *null2) {
 	ExifData *data;
 	char *result, *buf;
-	char *year, *month, *day, *hour, *min, *sec;
-	char *origfilename;
+	char year[] = "0000";
+	char month[] = "00";
+	char day[] = "00";
+	char hour[] = "00";
+	char min[] = "00";
+	char sec[] = "00";
 	char *origpath;
-	int len;
 	
 	if(strcmp(dir, ".") != 0)  {
 		origpath = (char *) malloc((strlen(dir) + strlen(path) + 2) * sizeof(char));
@@ -428,38 +431,18 @@ char *nm_str_exif(char* dir, char *path, char *pattern, char *null1, char *null2
 		data = exif_data_new_from_file(path);
 	
 	if(!data) return(NULL);
-	
-	//get memory
-	year = (char *) malloc(sizeof(char) * 5);
-	month = (char *) malloc(sizeof(char) * 3);
-	day = (char *) malloc(sizeof(char) * 3);
-	hour = (char *) malloc(sizeof(char) * 3);
-	min = (char *) malloc(sizeof(char) * 3);
-	sec = (char *) malloc(sizeof(char) * 3);
-	
+		
 	//get date information
 	buf = get_tag(data, EXIF_IFD_EXIF, EXIF_TAG_DATE_TIME_ORIGINAL);
-	strncpy(year, buf, 4);
-	year[4] = '\0';
-	strncpy(month, buf + 5*sizeof(char), 2);
-	month[2] = '\0';
-	strncpy(day, buf + 8*sizeof(char), 2);
-	day[2] = '\0';
-	strncpy(hour, buf + 11*sizeof(char), 2);
-	hour[2] = '\0';
-	strncpy(min, buf + 14*sizeof(char), 2);
-	min[2] = '\0';
-	strncpy(sec, buf + 17*sizeof(char), 2);
-	sec[2] = '\0';
-	
-	//get original filename
-	len = strrchr(path, '.') - path;
-	origfilename = (char *) malloc(len);
-	strncpy(origfilename, path, len / sizeof(char));
-	origfilename[len/sizeof(char)] = '\0';
+	strncpy(year, buf, 4); year[4] = '\0';
+	strncpy(month, buf + 5*sizeof(char), 2); month[2] = '\0';
+	strncpy(day, buf + 8*sizeof(char), 2); day[2] = '\0';
+	strncpy(hour, buf + 11*sizeof(char), 2); hour[2] = '\0';
+	strncpy(min, buf + 14*sizeof(char), 2); min[2] = '\0';
+	strncpy(sec, buf + 17*sizeof(char), 2); sec[2] = '\0';
 	
 	//now replace everything
-	buf = nm_str_replace(dir, pattern, "%o", origfilename, NULL);
+	buf = nm_str_replace(dir, pattern, "%o", path, NULL);
 	result = buf;
 	buf = nm_str_replace(dir, result, "%Y", year, NULL);
 	free(result);
@@ -479,15 +462,6 @@ char *nm_str_exif(char* dir, char *path, char *pattern, char *null1, char *null2
 	buf = nm_str_replace(dir, result, "%s", sec, NULL);
 	free(result);
 	result = buf;
-	
-	//free all vars
-	free(year);
-	free(month);
-	free(day);
-	free(hour);
-	free(min);
-	free(sec);
-	free(origfilename);
 	
 	return(result);
 }
