@@ -34,11 +34,11 @@ unsigned short force;
 
 void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1, char *arg2, char *arg3) {
 	char **newlist;
-	int i, j;
+	int i, j, len;
 	char answer;
-	char *slash, *buf;
+	char *slash, *filename, *dir;
 	//the function pointer
-	char *(*renamefunc)(char*, char*, char*, char*) = NULL;
+	char *(*renamefunc)(char*, char*, char*, char*, char*) = NULL;
 	
 	//check if list is empty
 	if(pathlist==NULL) nm_error(1, "Pathlist is empty! Nothing to rename!");
@@ -74,15 +74,26 @@ void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1,
 	//create new list
 	for(i=0; i<pathno; i++) {
 		if((slash = strrchr(pathlist[i], '/')) == NULL) {
-			newlist[i]=renamefunc(pathlist[i], arg1, arg2, arg3);
+			newlist[i]=renamefunc(".", pathlist[i], arg1, arg2, arg3);
 		}
 		//we only want to rename the file. Not it's parent paths
 		else {
-			buf = renamefunc(slash + sizeof(char), arg1, arg2, arg3);
-			newlist[i] = (char *) malloc(sizeof(char) * (strlen(buf) + 1 + (slash - pathlist[i])/sizeof(char)) );
-			strncpy(newlist[i], pathlist[i], (slash - pathlist[i])/sizeof(char));
-			strcat(newlist[i], "/");
-			strcat(newlist[i], buf);
+			len = (slash - pathlist[i])/sizeof(char);
+			dir = (char *) malloc((len+1) * sizeof(char));
+			strncpy(dir, pathlist[i], len);
+			
+			filename = renamefunc(dir, slash + sizeof(char), arg1, arg2, arg3);
+			if(filename == NULL)
+				newlist[i] = NULL;
+			else {
+				newlist[i] = (char *) malloc(sizeof(char) * (strlen(filename) + 1 + len));
+				strcpy(newlist[i], dir);
+				strcat(newlist[i], "/");
+				strcat(newlist[i], filename);
+				free(filename);
+			}
+			
+			free(dir);
 		}
 		
 		//if renaming failed omitt and just copy
