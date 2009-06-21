@@ -2,7 +2,7 @@
  * cmd.c
  * This file is part of nmrename
  *
- * Copyright (C) 2007-2009 Stefan Lohmaier
+ * Copyright (C) 2007 - Stefan Lohmaier
  *
  *  nmrename is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,10 @@ unsigned short force;
 
 void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1, char *arg2, char *arg3) {
 	char **newlist;
-	int i, j, len;
+	int i, j;
 	char answer;
-	char *slash, *filename, *dir;
 	//the function pointer
-	char *(*renamefunc)(char*, char*, char*, char*, char*) = NULL;
+	char *(*renamefunc)(char*, char*, char*, char*) = NULL;
 	
 	//check if list is empty
 	if(pathlist==NULL) nm_error(1, "Pathlist is empty! Nothing to rename!");
@@ -58,9 +57,6 @@ void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1,
 		case nmcmdstrinsert:    renamefunc=nm_str_insert; break;
 		case nmcmdstrreplace:   renamefunc=nm_str_replace; break;
 		case nmcmdlist:         renamefunc=nm_str_list; break;
-		#ifdef WITH_EXIF
-		case nmcmdexif:          renamefunc=nm_str_exif; break;
-		#endif
 		default:
 			nm_error(1, "Well. This shouldn't happen.");
 			break;
@@ -73,28 +69,8 @@ void nmrename(char **pathlist, int pathno, nmcmd cmd, char *cmdtext, char *arg1,
 	
 	//create new list
 	for(i=0; i<pathno; i++) {
-		if((slash = strrchr(pathlist[i], '/')) == NULL) {
-			newlist[i]=renamefunc(".", pathlist[i], arg1, arg2, arg3);
-		}
-		//we only want to rename the file. Not it's parent paths
-		else {
-			len = (slash - pathlist[i])/sizeof(char);
-			dir = (char *) malloc((len+1) * sizeof(char));
-			strncpy(dir, pathlist[i], len);
-			
-			filename = renamefunc(dir, slash + sizeof(char), arg1, arg2, arg3);
-			if(filename == NULL)
-				newlist[i] = NULL;
-			else {
-				newlist[i] = (char *) malloc(sizeof(char) * (strlen(filename) + 1 + len));
-				strcpy(newlist[i], dir);
-				strcat(newlist[i], "/");
-				strcat(newlist[i], filename);
-				free(filename);
-			}
-			
-			free(dir);
-		}
+		//rename the path
+		newlist[i]=renamefunc(pathlist[i], arg1, arg2, arg3);
 		
 		//if renaming failed omitt and just copy
 		if(newlist[i]==NULL || strcmp(newlist[i], "") == 0) {

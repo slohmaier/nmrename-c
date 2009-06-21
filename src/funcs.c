@@ -2,7 +2,7 @@
  * funcs.c
  * This file is part of nmrename
  *
- * Copyright (C) 2007-2009 Stefan Lohmaier
+ * Copyright (C) 2007 - Stefan Lohmaier
  *
  * nmrename is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

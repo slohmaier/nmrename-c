@@ -2,7 +2,7 @@
  * main.c
  * This file is part of nmrename
  *
- * Copyright (C) 2007-2009 Stefan Lohmaier
+ * Copyright (C) 2007 - Stefan Lohmaier
  *
  * nmrename is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,14 +37,9 @@ unsigned short force=0; //force renaming? no questions asked
 //main-Program
 //---
 int main(int argc, char **argv) {
-	//just print a text if no arguments present
-	if(argc<2) {
-		printf("I need arguments! Try %s -h.\n", argv[0]);
-		return(0);
-	}
-	
 	//vars
 	int argindex=0;
+	int i;
 	static struct nmopts options[] = {
 		{nmcmdhelp, "-h", 0, NULL},
 		{nmcmdforce, "-f", 0, NULL},
@@ -59,9 +54,6 @@ int main(int argc, char **argv) {
 		{nmcmdfielddelete, "-fd", 2, "Deleting field %s delimited by \'%s\'"},
 		{nmcmdfieldswitch, "-fs", 3, "Switching field %s with %s delimited by \'%s\'"},
 		{nmcmdlist, "-l", 1, "Getting new pathnames from listfile \'%s\'"},
-		#ifdef WITH_EXIF
-		{nmcmdexif, "-exif", 1, "Replacing pathnames with exif data from pattern \'%s\':"},
-		#endif
 		{nmcmderror, NULL, -1 ,NULL}
 	};
 	struct nmopts *option;
@@ -88,9 +80,6 @@ int main(int argc, char **argv) {
 			case nmcmdstrinsert:
 			case nmcmdstrreplace:
 			case nmcmdlist:
-			#ifdef WITH_EXIF
-			case nmcmdexif:
-			#endif
 				//check if enough arguments left
 				if(argc-argindex-option->argcount<1) {
 					nm_error(0, "%d. argument \'%s\' has not enough arguments!", argindex, argv[argindex]);
@@ -107,8 +96,6 @@ int main(int argc, char **argv) {
 					error=1;
 				}
 		}
-		
-		//free(option);
 	}
 	//Error encountered? exit.
 	if(error==1) return(1);
@@ -141,9 +128,6 @@ int main(int argc, char **argv) {
 			case nmcmdstrinsert:
 			case nmcmdstrreplace:
 			case nmcmdlist:
-			#ifdef WITH_EXIF
-			case nmcmdexif:
-			#endif
 				nmrename(pathlist, pathno, option->id, option->text, argv[argindex+1], argv[argindex+2], argv[argindex+3]);
 				argindex+=option->argcount;
 				break;
@@ -155,8 +139,6 @@ int main(int argc, char **argv) {
 				pathlist[pathno++]=argv[argindex];
 				break;
 		}
-		
-		//free(option);
 	}
 	
 	//Good bye!

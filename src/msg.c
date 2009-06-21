@@ -2,7 +2,7 @@
  * msg.c
  * This file is part of nmrename
  *
- * Copyright (C) 2007-2009 Stefan Lohmaier
+ * Copyright (C) 2007 - Stefan Lohmaier
  *
  * nmrename is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ void nm_help(void) {
 	printf(
 		"\n"
 		"nmrename %s - A mass renaming tool.\n"
-		"Copyright 2007-2009 by Stefan Lohmaier\n"
+		"Copyright 2007 by Stefan Lohmaier <noneuss at gmail dot com>\n"
 		"\n"
 		"Usage:\n"
 		"    nmrename [PATHLIST] [COMMANDS]\n"
@@ -96,22 +96,6 @@ void nm_help(void) {
 		"\n"
 		"  -l [FILENAME] : Loads new pathnames from [FILENAME] (List MUST have\n"
 		"                  EXACTLY as many paths as paths in the pathlist!)\n"
-		#ifdef WITH_EXIF
-		"\n"
-		"  -exif [PATTERN] : New Pathnames will be replaced by PATTERN.\n"
-		"\n"
-		"        PATTERN can have the following keywords:\n"
-		"          Date:\n"
-		"            %%Y: year\n"
-		"            %%M: month\n"
-		"            %%D: day\n"
-		"            %%h: hour\n"
-		"            %%m: minute\n"
-		"            %%s: second\n"
-		"\n"
-		"          Other:\n"
-		"            %%o: original filename\n"
-		#endif
 		"\n"
 		"  [POS*] can be 0,1,2,... or -0,-1,-2,... ('-' starts counting from the right).\n"
 		"  [S*] is a string of your choice.\n"

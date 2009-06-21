@@ -3,7 +3,7 @@
  * str.c
  * This file is part of nmrename
  *
- * Copyright (C) 2007-2009 Stefan Lohmaier
+ * Copyright (C) 2007 - Stefan Lohmaier
  *
  * nmrename is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,17 +26,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#ifdef WITH_EXIF
-#include <libexif/exif-data.h>
-#endif
-
 #include "msg.h"
 #include "funcs.h"
 
 //remove from pos1 to pos2 from str and return new string
 //---
-char *nm_str_delete(char* dir, char* str, char* cpos1, char* cpos2, char *null1) {
+char *nm_str_delete(char* str, char* cpos1, char* cpos2, char *null1) {
 	//vars
 	//---
 	char *result;         //the returning string
@@ -81,7 +76,7 @@ char *nm_str_delete(char* dir, char* str, char* cpos1, char* cpos2, char *null1)
 
 //replace str1 with str2 in str and return new string
 //---
-char *nm_str_replace(char* dir, char* path, char* str1, char* str2, char *null1) {
+char *nm_str_replace(char* path, char* str1, char* str2, char *null1) {
 	//vars
 	//---
 	int size;               //all the sizes
@@ -135,7 +130,7 @@ char *nm_str_replace(char* dir, char* path, char* str1, char* str2, char *null1)
 
 //insert str at cpos
 //---
-char *nm_str_insert(char* dir, char* path, char* str, char* cpos, char *null1) {
+char *nm_str_insert(char* path, char* str, char* cpos, char *null1) {
 	//vars
 	//---
 	char *result; //resulting string
@@ -177,7 +172,7 @@ char *nm_str_insert(char* dir, char* path, char* str, char* cpos, char *null1) {
 
 //convert str to camlcase (aa bb cc -> Aa Bb Cc)
 //---
-char *nm_str_case_camel(char* dir, char* str, char *null1, char *null2, char *null3) {
+char *nm_str_case_camel(char* str, char *null1, char *null2, char *null3) {
 	//vars
 	//---
 	char *result;	//resulting var
@@ -220,7 +215,7 @@ char *nm_str_case_camel(char* dir, char* str, char *null1, char *null2, char *nu
 
 //lower case everything
 //---
-char *nm_str_case_lower(char* dir, char *str, char *null1, char *null2, char *null3) {
+char *nm_str_case_lower(char *str, char *null1, char *null2, char *null3) {
 	//vars
 	//---
 	char *result;	//resulting char
@@ -242,7 +237,7 @@ char *nm_str_case_lower(char* dir, char *str, char *null1, char *null2, char *nu
 
 //uppercase case everything
 //---
-char *nm_str_case_upper(char* dir, char *str, char *null1, char *null2, char *null3) {
+char *nm_str_case_upper(char *str, char *null1, char *null2, char *null3) {
 	//vars
 	//---
 	char *result;	//resulting char
@@ -264,7 +259,7 @@ char *nm_str_case_upper(char* dir, char *str, char *null1, char *null2, char *nu
 
 //delete field cnum from str. fields delimiters are in dels.
 //---
-char *nm_str_delete_field(char* dir, char *str, char *cnum, char *dels, char *null1) {
+char *nm_str_delete_field(char *str, char *cnum, char *dels, char *null1) {
 	//vars
 	//---
 	char *result;	//resulting char
@@ -309,7 +304,7 @@ char *nm_str_delete_field(char* dir, char *str, char *cnum, char *dels, char *nu
 
 //switch field f1 with field f2. fields delimiters are in dels.
 //---
-char *nm_str_switch_field(char* dir, char *str, char *f1, char *f2, char *dels) {
+char *nm_str_switch_field(char *str, char *f1, char *f2, char *dels) {
 	//vars
 	//---
 	char *result;	//resulting char;
@@ -349,14 +344,14 @@ char *nm_str_switch_field(char* dir, char *str, char *f1, char *f2, char *dels) 
 }
 
 //This function just uses str_replace
-char *nm_str_delete_str(char* dir, char *path, char *str, char *null1, char *null2) {
-	return(nm_str_replace(dir, path, str, "", NULL));
+char *nm_str_delete_str(char *path, char *str, char *null1, char *null2) {
+	return(nm_str_replace(path, str, "", NULL));
 }
 
 //This function gets the paths from the file 'list'
 //It just tries to load new paths from the file on call
 //A new run is detected by checking if we're at the first file again
-char *nm_str_list(char* dir, char *path, char *list, char *null1, char *null2) {
+char *nm_str_list(char *path, char *list, char *null1, char *null2) {
 	static FILE *file=NULL;
 	static char oldff[256];
 	static char oldffr[256];
@@ -394,75 +389,3 @@ char *nm_str_list(char* dir, char *path, char *list, char *null1, char *null2) {
 	i++;
 	return result;
 }
-
-#ifdef WITH_EXIF
-char *get_tag(ExifData *data, ExifIfd ifd, ExifTag tag) {
-	ExifEntry *entry = exif_content_get_entry(data->ifd[ifd], tag);
-	
-	if(entry) {
-		char *buf = (char *) malloc(sizeof(char) * 1024);
-		exif_entry_get_value(entry, buf, 1024);
-		return buf;
-	}
-	else
-		return NULL;
-}
-
-char *nm_str_exif(char* dir, char *path, char *pattern, char *null1, char *null2) {
-	ExifData *data;
-	char *result, *buf;
-	char year[] = "0000";
-	char month[] = "00";
-	char day[] = "00";
-	char hour[] = "00";
-	char min[] = "00";
-	char sec[] = "00";
-	char *origpath;
-	
-	if(strcmp(dir, ".") != 0)  {
-		origpath = (char *) malloc((strlen(dir) + strlen(path) + 2) * sizeof(char));
-		strcpy(origpath, dir);
-		strcat(origpath, "/");
-		strcat(origpath, path);
-		data = exif_data_new_from_file(origpath);
-		free(origpath);
-	}
-	else
-		data = exif_data_new_from_file(path);
-	
-	if(!data) return(NULL);
-		
-	//get date information
-	buf = get_tag(data, EXIF_IFD_EXIF, EXIF_TAG_DATE_TIME_ORIGINAL);
-	strncpy(year, buf, 4); year[4] = '\0';
-	strncpy(month, buf + 5*sizeof(char), 2); month[2] = '\0';
-	strncpy(day, buf + 8*sizeof(char), 2); day[2] = '\0';
-	strncpy(hour, buf + 11*sizeof(char), 2); hour[2] = '\0';
-	strncpy(min, buf + 14*sizeof(char), 2); min[2] = '\0';
-	strncpy(sec, buf + 17*sizeof(char), 2); sec[2] = '\0';
-	
-	//now replace everything
-	buf = nm_str_replace(dir, pattern, "%o", path, NULL);
-	result = buf;
-	buf = nm_str_replace(dir, result, "%Y", year, NULL);
-	free(result);
-	result = buf;
-	buf = nm_str_replace(dir, result, "%M", month, NULL);
-	free(result);
-	result = buf;
-	buf = nm_str_replace(dir, result, "%D", day, NULL);
-	free(result);
-	result = buf;
-	buf = nm_str_replace(dir, result, "%h", hour, NULL);
-	free(result);
-	result = buf;
-	buf = nm_str_replace(dir, result, "%m", min, NULL);
-	free(result);
-	result = buf;
-	buf = nm_str_replace(dir, result, "%s", sec, NULL);
-	free(result);
-	result = buf;
-	
-	return(result);
-}
-#endif
