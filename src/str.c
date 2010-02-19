@@ -1,9 +1,8 @@
-
 /*
  * str.c
  * This file is part of nmrename
  *
- * Copyright (C) 2007-2009 Stefan Lohmaier
+ * Copyright (C) 2007-2010 Stefan Lohmaier
  *
  * nmrename is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -466,3 +465,4 @@ char *nm_str_exif(char* dir, char *path, char *pattern, char *null1, char *null2
 	return(result);
 }
 #endif
+
