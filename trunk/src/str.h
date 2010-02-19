@@ -2,7 +2,7 @@
  * str.h
  * This file is part of nmrename
  *
- * Copyright (char* dir, C) 2007-2009 Stefan Lohmaier
+ * Copyright 2007-2010 Stefan Lohmaier
  *
  *  nmrename is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,3 +33,4 @@ char *nm_str_list(char* dir, char *path, char *list, char *null1, char *null2);
 #ifdef WITH_EXIF
 char *nm_str_exif(char* dir, char *path, char *pattern, char *null1, char *null2);
 #endif
+

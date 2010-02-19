@@ -2,7 +2,7 @@
  * funcs.c
  * This file is part of nmrename
  *
- * Copyright (C) 2007-2009 Stefan Lohmaier
+ * Copyright (C) 2007-2010 Stefan Lohmaier
  *
  * nmrename is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,3 +153,4 @@ struct nmfield *nm_convert_field(char *str, char *cfield, char *dels) {
 	
 	return(result);
 }
+
