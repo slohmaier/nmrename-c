@@ -1,1 +1,0 @@
-./Debug/src_cmd.c.o ./Debug/src_funcs.c.o ./Debug/src_msg.c.o ./Debug/src_nmopt.c.o ./Debug/src_nmrename.c.o ./Debug/src_str.c.o
