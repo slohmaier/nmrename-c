@@ -2,7 +2,7 @@
  * nmopt.c
  * This file is part of nmrename
  *
- * Copyright (C) 2007-2010 Stefan Lohmaier
+ * Copyright (C) 2007-2020 Stefan Lohmaier
  *
  * nmrename is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
  */
 
 #include "nmopt.h"
-#include "msg.h"
-#include "string.h"
+#include msg.h"
+#include <string.h>
 
 struct nmopts *nmopt(char **argv, int argc, struct nmopts *options, int *index) {
 	struct nmopts *result = options;
