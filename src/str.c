@@ -30,8 +30,8 @@
 #include <libexif/exif-data.h>
 #endif
 
-#include <msg.h>
-#include <funcs.h>
+#include "msg.h"
+#include "funcs.h"
 
 //remove from pos1 to pos2 from str and return new string
 //---

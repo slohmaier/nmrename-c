@@ -21,7 +21,7 @@
  */
 
 #include "nmopt.h"
-#include msg.h"
+#include "msg.h"
 #include <string.h>
 
 struct nmopts *nmopt(char **argv, int argc, struct nmopts *options, int *index) {
